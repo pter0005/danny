@@ -6,6 +6,8 @@
 <title>Estoque Danny</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 
@@ -75,9 +77,6 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--black);min
 
 /* MAIN */
 .main{padding:32px 40px;overflow-y:auto;}
-
-.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
-.page-header h1{font-size:26px;font-weight:700;letter-spacing:-0.5px;}
 
 /* GREETING */
 .greeting{margin-bottom:32px;}
@@ -178,6 +177,7 @@ tbody td{padding:16px 20px;font-size:14px;vertical-align:middle;}
 .product-info{display:flex;flex-direction:column;gap:2px;}
 .product-name{font-weight:600;}
 .product-sku{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--g4);}
+.product-code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);margin-top:1px;}
 
 .category-chip{
   display:inline-flex;padding:5px 12px;border-radius:50px;
@@ -224,7 +224,7 @@ tbody tr:hover .row-actions{opacity:1;}
 .modal-overlay.active{display:flex;}
 
 .modal{
-  background:var(--white);border-radius:22px;width:500px;max-width:100%;
+  background:var(--white);border-radius:22px;width:520px;max-width:100%;
   box-shadow:var(--shadow-xl);animation:modalIn 0.35s cubic-bezier(0.16,1,0.3,1);max-height:90vh;overflow-y:auto;
 }
 @keyframes modalIn{from{opacity:0;transform:translateY(24px) scale(0.96);}to{opacity:1;transform:none;}}
@@ -253,6 +253,7 @@ tbody tr:hover .row-actions{opacity:1;}
 .form-group select{cursor:pointer;}
 
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
 
 .modal-footer{padding:0 28px 28px;display:flex;justify-content:flex-end;gap:10px;}
 
@@ -300,7 +301,7 @@ tbody tr:hover .row-actions{opacity:1;}
   .main{padding:20px;}
   .stats-grid{grid-template-columns:repeat(2,1fr);}
   .toolbar{flex-wrap:wrap;}
-  .form-row{grid-template-columns:1fr;}
+  .form-row,.form-row-3{grid-template-columns:1fr;}
   .row-actions{opacity:1;}
   .mobile-toggle{display:flex!important;}
   .greeting h2{font-size:22px;}
@@ -353,7 +354,7 @@ tbody tr:hover .row-actions{opacity:1;}
       <div class="toolbar">
         <div class="search-wrapper">
           <span class="si">🔍</span>
-          <input type="text" class="search-input" id="searchInput" placeholder="Buscar produto ou SKU..." oninput="render()">
+          <input type="text" class="search-input" id="searchInput" placeholder="Buscar nome, SKU ou código..." oninput="render()">
         </div>
         <div class="filter-pills">
           <button class="pill active" onclick="setFilter('all',this)">Todos</button>
@@ -370,7 +371,15 @@ tbody tr:hover .row-actions{opacity:1;}
       <div id="tableArea">
         <div class="table-container">
           <table>
-            <thead><tr><th>Produto</th><th>Categoria</th><th>Qtd</th><th>Preço</th><th>Valor Total</th><th>Status</th><th style="width:90px"></th></tr></thead>
+            <thead><tr>
+              <th>Produto</th>
+              <th>Categoria</th>
+              <th>Qtd</th>
+              <th>Preço</th>
+              <th>Valor Total</th>
+              <th>Status</th>
+              <th style="width:90px"></th>
+            </tr></thead>
             <tbody id="tbody"></tbody>
           </table>
           <div class="total-bar" id="totalBar"></div>
@@ -387,7 +396,10 @@ tbody tr:hover .row-actions{opacity:1;}
 
     <!-- ACTIVITY -->
     <section class="view-section" id="view-activity">
-      <div class="page-header"><h1>Atividade</h1><button class="btn btn-secondary" onclick="clearActivity()">Limpar</button></div>
+      <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;">
+        <h1 style="font-size:26px;font-weight:700;">Atividade</h1>
+        <button class="btn btn-secondary" onclick="clearActivity()">Limpar</button>
+      </div>
       <div class="activity-list" id="activityList"></div>
     </section>
   </main>
@@ -400,15 +412,16 @@ tbody tr:hover .row-actions{opacity:1;}
     <div class="modal-body">
       <input type="hidden" id="editId">
       <div class="form-group"><label>Nome do produto</label><input type="text" id="fName" placeholder="Ex: Camiseta Oversized Preta"></div>
-      <div class="form-row">
+      <div class="form-row-3">
+        <div class="form-group"><label>Código</label><input type="text" id="fCode" placeholder="0001"></div>
         <div class="form-group"><label>SKU</label><input type="text" id="fSku" placeholder="CAM-001"></div>
         <div class="form-group"><label>Categoria</label><select id="fCat"><option>Geral</option><option>Eletrônicos</option><option>Roupas</option><option>Alimentos</option><option>Acessórios</option><option>Bebidas</option><option>Outros</option></select></div>
       </div>
-      <div class="form-row">
+      <div class="form-row-3">
         <div class="form-group"><label>Quantidade</label><input type="number" id="fQty" placeholder="0" min="0"></div>
         <div class="form-group"><label>Preço unitário (R$)</label><input type="number" id="fPrice" placeholder="0.00" step="0.01" min="0"></div>
+        <div class="form-group"><label>Estoque mínimo</label><input type="number" id="fMin" placeholder="5" min="0" value="5"></div>
       </div>
-      <div class="form-group"><label>Estoque mínimo</label><input type="number" id="fMin" placeholder="5" min="0" value="5"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
@@ -421,12 +434,8 @@ tbody tr:hover .row-actions{opacity:1;}
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 <div class="toast-container" id="toasts"></div>
 
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
 <script>
-// Firebase Config
+// === FIREBASE INIT ===
 firebase.initializeApp({
   apiKey: "AIzaSyCgQoZZPvC5EqfjtXhVNyBGgWTzqQ6rfO0",
   authDomain: "danny-f856e.firebaseapp.com",
@@ -443,48 +452,54 @@ const activityRef = db.collection('activity');
 let products = [];
 let activity = [];
 let filter = 'all';
+let loaded = false;
 
-// === LOAD DATA (realtime) ===
-productsRef.orderBy('createdAt','desc').onSnapshot(snap => {
-  products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+// === REALTIME LISTENERS ===
+productsRef.orderBy('createdAt','desc').onSnapshot(function(snap){
+  products = snap.docs.map(function(d){ return Object.assign({id: d.id}, d.data()); });
   render();
+  if(!loaded){ loaded = true; hideLoading(); }
+}, function(err){
+  console.error('Firestore error:', err);
+  toast('Erro de conexão','❌');
   hideLoading();
 });
 
-activityRef.orderBy('time','desc').limit(50).onSnapshot(snap => {
-  activity = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+activityRef.orderBy('time','desc').limit(50).onSnapshot(function(snap){
+  activity = snap.docs.map(function(d){ return Object.assign({id: d.id}, d.data()); });
   renderAct();
 });
 
 function hideLoading(){
-  const el = document.getElementById('loadingScreen');
+  var el = document.getElementById('loadingScreen');
   el.classList.add('hide');
-  setTimeout(() => el.style.display = 'none', 500);
+  setTimeout(function(){ el.style.display = 'none'; }, 500);
 }
 
 // === GREETING ===
 (function(){
-  const h = new Date().getHours();
-  let g = 'Bom dia';
+  var h = new Date().getHours();
+  var g = 'Bom dia';
   if(h >= 12 && h < 18) g = 'Boa tarde';
   if(h >= 18) g = 'Boa noite';
-  document.getElementById('greetingText').innerHTML = `${g}, <span>Danny</span> 👋`;
+  document.getElementById('greetingText').innerHTML = g + ', <span>Danny</span> 👋';
 })();
 
 // === RENDER ===
-const getStatus = p => p.qty === 0 ? 'out' : p.qty <= p.min ? 'low' : 'ok';
-const statusLabel = s => s === 'ok' ? 'Em estoque' : s === 'low' ? 'Baixo' : 'Sem estoque';
+function getStatus(p){ return p.qty === 0 ? 'out' : p.qty <= p.min ? 'low' : 'ok'; }
+function statusLabel(s){ return s === 'ok' ? 'Em estoque' : s === 'low' ? 'Baixo' : 'Sem estoque'; }
 
 function render(){
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const list = products.filter(p => {
-    const m = p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  var list = products.filter(function(p){
+    var code = (p.code || '').toLowerCase();
+    var m = p.name.toLowerCase().indexOf(q) > -1 || p.sku.toLowerCase().indexOf(q) > -1 || code.indexOf(q) > -1;
     return m && (filter === 'all' || getStatus(p) === filter);
   });
 
-  const tbody = document.getElementById('tbody');
-  const empty = document.getElementById('emptyState');
-  const area = document.getElementById('tableArea');
+  var tbody = document.getElementById('tbody');
+  var empty = document.getElementById('emptyState');
+  var area = document.getElementById('tableArea');
 
   if(!products.length){
     area.style.display = 'none'; empty.style.display = 'block';
@@ -496,29 +511,31 @@ function render(){
     document.getElementById('emptySub').textContent = 'Tente outro filtro ou busca';
   } else {
     area.style.display = 'block'; empty.style.display = 'none';
-    tbody.innerHTML = list.map(p => {
-      const s = getStatus(p), t = (p.qty * p.price).toFixed(2);
-      return `<tr>
-        <td><div class="product-info"><span class="product-name">${p.name}</span><span class="product-sku">${p.sku}</span></div></td>
-        <td><span class="category-chip">${p.cat}</span></td>
-        <td><span class="qty-display">${p.qty}</span></td>
-        <td><span class="price-display">R$ ${p.price.toFixed(2)}</span></td>
-        <td><span class="price-display">R$ ${t}</span></td>
-        <td><span class="status-badge status-${s}"><span class="dot"></span>${statusLabel(s)}</span></td>
-        <td><div class="row-actions">
-          <button class="btn-icon" onclick="editProduct('${p.id}')" title="Editar">✎</button>
-          <button class="btn-icon danger" onclick="deleteProduct('${p.id}')" title="Excluir">✕</button>
-        </div></td>
-      </tr>`;
+    tbody.innerHTML = list.map(function(p){
+      var s = getStatus(p);
+      var t = (p.qty * p.price).toFixed(2);
+      var codeHtml = p.code ? '<span class="product-code">Cód: ' + p.code + '</span>' : '';
+      return '<tr>' +
+        '<td><div class="product-info"><span class="product-name">' + p.name + '</span><span class="product-sku">' + p.sku + '</span>' + codeHtml + '</div></td>' +
+        '<td><span class="category-chip">' + p.cat + '</span></td>' +
+        '<td><span class="qty-display">' + p.qty + '</span></td>' +
+        '<td><span class="price-display">R$ ' + p.price.toFixed(2) + '</span></td>' +
+        '<td><span class="price-display">R$ ' + t + '</span></td>' +
+        '<td><span class="status-badge status-' + s + '"><span class="dot"></span>' + statusLabel(s) + '</span></td>' +
+        '<td><div class="row-actions">' +
+          '<button class="btn-icon" onclick="editProduct(\'' + p.id + '\')" title="Editar">✎</button>' +
+          '<button class="btn-icon danger" onclick="deleteProduct(\'' + p.id + '\')" title="Excluir">✕</button>' +
+        '</div></td>' +
+      '</tr>';
     }).join('');
 
-    const gt = list.reduce((a,p) => a + p.qty * p.price, 0);
-    document.getElementById('totalBar').innerHTML = `Valor em estoque: <strong>R$ ${gt.toFixed(2)}</strong>`;
+    var gt = list.reduce(function(a,p){ return a + p.qty * p.price; }, 0);
+    document.getElementById('totalBar').innerHTML = 'Valor em estoque: <strong>R$ ' + gt.toFixed(2) + '</strong>';
   }
 
-  const ok = products.filter(p => getStatus(p)==='ok').length;
-  const low = products.filter(p => getStatus(p)==='low').length;
-  const out = products.filter(p => getStatus(p)==='out').length;
+  var ok = products.filter(function(p){ return getStatus(p)==='ok'; }).length;
+  var low = products.filter(function(p){ return getStatus(p)==='low'; }).length;
+  var out = products.filter(function(p){ return getStatus(p)==='out'; }).length;
   document.getElementById('sTotal').textContent = products.length;
   document.getElementById('sOk').textContent = ok;
   document.getElementById('sLow').textContent = low;
@@ -528,7 +545,7 @@ function render(){
 
 function setFilter(f, el){
   filter = f;
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('active'); });
   el.classList.add('active');
   render();
 }
@@ -537,21 +554,22 @@ function setFilter(f, el){
 function openModal(){
   document.getElementById('modal').classList.add('active');
   document.getElementById('modalTitle').textContent = 'Novo item';
-  ['editId','fName','fSku','fQty','fPrice'].forEach(i => document.getElementById(i).value = '');
+  ['editId','fName','fCode','fSku','fQty','fPrice'].forEach(function(i){ document.getElementById(i).value = ''; });
   document.getElementById('fCat').value = 'Geral';
   document.getElementById('fMin').value = '5';
-  setTimeout(() => document.getElementById('fName').focus(), 100);
+  setTimeout(function(){ document.getElementById('fName').focus(); }, 100);
 }
 
 function closeModal(){ document.getElementById('modal').classList.remove('active'); }
 
 function editProduct(id){
-  const p = products.find(x => x.id === id);
+  var p = products.find(function(x){ return x.id === id; });
   if(!p) return;
   document.getElementById('modal').classList.add('active');
   document.getElementById('modalTitle').textContent = 'Editar item';
   document.getElementById('editId').value = id;
   document.getElementById('fName').value = p.name;
+  document.getElementById('fCode').value = p.code || '';
   document.getElementById('fSku').value = p.sku;
   document.getElementById('fCat').value = p.cat;
   document.getElementById('fQty').value = p.qty;
@@ -559,91 +577,81 @@ function editProduct(id){
   document.getElementById('fMin').value = p.min;
 }
 
-async function saveProduct(){
-  const name = document.getElementById('fName').value.trim();
-  const sku = document.getElementById('fSku').value.trim();
-  const cat = document.getElementById('fCat').value;
-  const qty = parseInt(document.getElementById('fQty').value) || 0;
-  const price = parseFloat(document.getElementById('fPrice').value) || 0;
-  const min = parseInt(document.getElementById('fMin').value) || 5;
+function saveProduct(){
+  var name = document.getElementById('fName').value.trim();
+  var code = document.getElementById('fCode').value.trim();
+  var sku = document.getElementById('fSku').value.trim();
+  var cat = document.getElementById('fCat').value;
+  var qty = parseInt(document.getElementById('fQty').value) || 0;
+  var price = parseFloat(document.getElementById('fPrice').value) || 0;
+  var min = parseInt(document.getElementById('fMin').value) || 5;
 
   if(!name) return toast('Preencha o nome','⚠️');
   if(!sku) return toast('Preencha o SKU','⚠️');
 
-  const eid = document.getElementById('editId').value;
+  var eid = document.getElementById('editId').value;
 
-  try {
-    if(eid){
-      await productsRef.doc(eid).update({ name, sku, cat, qty, price, min });
-      await logAct('edit', `Editou <strong>${name}</strong>`);
-      toast('Atualizado','✅');
-    } else {
-      await productsRef.add({ name, sku, cat, qty, price, min, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-      await logAct('add', `Adicionou <strong>${name}</strong>`);
-      toast('Adicionado','✅');
-    }
-    closeModal();
-  } catch(e){
-    toast('Erro ao salvar','❌');
-    console.error(e);
+  if(eid){
+    productsRef.doc(eid).update({ name:name, code:code, sku:sku, cat:cat, qty:qty, price:price, min:min })
+      .then(function(){ logAct('edit', 'Editou <strong>' + name + '</strong>'); toast('Atualizado','✅'); closeModal(); })
+      .catch(function(e){ toast('Erro ao salvar','❌'); console.error(e); });
+  } else {
+    productsRef.add({ name:name, code:code, sku:sku, cat:cat, qty:qty, price:price, min:min, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+      .then(function(){ logAct('add', 'Adicionou <strong>' + name + '</strong>'); toast('Adicionado','✅'); closeModal(); })
+      .catch(function(e){ toast('Erro ao salvar','❌'); console.error(e); });
   }
 }
 
-async function deleteProduct(id){
-  const p = products.find(x => x.id === id);
-  if(!p || !confirm(`Excluir "${p.name}"?`)) return;
-  try {
-    await productsRef.doc(id).delete();
-    await logAct('delete', `Removeu <strong>${p.name}</strong>`);
-    toast('Removido','🗑️');
-  } catch(e){
-    toast('Erro ao remover','❌');
-  }
+function deleteProduct(id){
+  var p = products.find(function(x){ return x.id === id; });
+  if(!p || !confirm('Excluir "' + p.name + '"?')) return;
+  productsRef.doc(id).delete()
+    .then(function(){ logAct('delete', 'Removeu <strong>' + p.name + '</strong>'); toast('Removido','🗑️'); })
+    .catch(function(e){ toast('Erro ao remover','❌'); });
 }
 
 // === EXPORT ===
 function exportCSV(){
   if(!products.length) return toast('Nada para exportar','⚠️');
-  const csv = 'Nome,SKU,Categoria,Quantidade,Preço,Estoque Mínimo\n' +
-    products.map(p => `"${p.name}","${p.sku}","${p.cat}",${p.qty},${p.price},${p.min}`).join('\n');
-  const a = document.createElement('a');
+  var csv = 'Nome,Código,SKU,Categoria,Quantidade,Preço,Estoque Mínimo\n' +
+    products.map(function(p){ return '"'+p.name+'","'+(p.code||'')+'","'+p.sku+'","'+p.cat+'",'+p.qty+','+p.price+','+p.min; }).join('\n');
+  var a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
-  a.download = `estoque_danny_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download = 'estoque_danny_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
   toast('CSV exportado','📄');
 }
 
 // === ACTIVITY ===
-async function logAct(type, text){
-  await activityRef.add({ type, text, time: Date.now() });
+function logAct(type, text){
+  activityRef.add({ type:type, text:text, time:Date.now() });
 }
 
 function renderAct(){
-  const el = document.getElementById('activityList');
+  var el = document.getElementById('activityList');
   document.getElementById('activityCount').textContent = activity.length;
   if(!activity.length){
     el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><h3>Sem atividades</h3><p>Ações aparecerão aqui</p></div>';
     return;
   }
-  el.innerHTML = activity.map(a => {
-    const d = Date.now() - a.time, m = Math.floor(d/60000);
-    const ago = m<1?'agora':m<60?m+'min':m<1440?Math.floor(m/60)+'h':Math.floor(m/1440)+'d';
-    return `<div class="activity-item"><span class="activity-dot ${a.type}"></span><span class="activity-text">${a.text}</span><span class="activity-time">${ago}</span></div>`;
+  el.innerHTML = activity.map(function(a){
+    var d = Date.now() - a.time, m = Math.floor(d/60000);
+    var ago = m<1?'agora':m<60?m+'min':m<1440?Math.floor(m/60)+'h':Math.floor(m/1440)+'d';
+    return '<div class="activity-item"><span class="activity-dot '+a.type+'"></span><span class="activity-text">'+a.text+'</span><span class="activity-time">'+ago+'</span></div>';
   }).join('');
 }
 
-async function clearActivity(){
-  const batch = db.batch();
-  activity.forEach(a => batch.delete(activityRef.doc(a.id)));
-  await batch.commit();
-  toast('Limpo','🗑️');
+function clearActivity(){
+  var batch = db.batch();
+  activity.forEach(function(a){ batch.delete(activityRef.doc(a.id)); });
+  batch.commit().then(function(){ toast('Limpo','🗑️'); });
 }
 
 // === VIEWS ===
 function switchView(v, el){
-  document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.view-section').forEach(function(s){ s.classList.remove('active'); });
   document.getElementById('view-'+v).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
   el.classList.add('active');
   if(v === 'activity') renderAct();
   document.getElementById('sidebar').classList.remove('open');
@@ -656,16 +664,17 @@ function toggleSidebar(){
 }
 
 // === TOAST ===
-function toast(msg, icon=''){
-  const c = document.getElementById('toasts'), el = document.createElement('div');
-  el.className = 'toast'; el.innerHTML = `${icon} ${msg}`;
+function toast(msg, icon){
+  icon = icon || '';
+  var c = document.getElementById('toasts'), el = document.createElement('div');
+  el.className = 'toast'; el.innerHTML = icon + ' ' + msg;
   c.appendChild(el);
-  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 2800);
+  setTimeout(function(){ el.classList.add('out'); setTimeout(function(){ el.remove(); }, 300); }, 2800);
 }
 
 // === SHORTCUTS ===
-document.getElementById('modal').addEventListener('click', e => { if(e.target === e.currentTarget) closeModal(); });
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+document.getElementById('modal').addEventListener('click', function(e){ if(e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
 </script>
 </body>
 </html>
