@@ -21,139 +21,22 @@
 
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--black);min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-/* ============ LOGIN ============ */
-.login-screen{
-  position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
-  background:var(--black);overflow:hidden;transition:opacity 0.5s,transform 0.5s;
+/* LOADING */
+.loading-screen{
+  position:fixed;inset:0;z-index:9999;background:var(--white);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 0.4s;
 }
-.login-screen.hiding{opacity:0;transform:scale(1.05);}
-.login-screen.hidden{display:none;}
-
-.login-bg{
-  position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse at 20% 50%, rgba(0,200,83,0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(41,121,255,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(255,23,68,0.04) 0%, transparent 50%);
+.loading-screen.hide{opacity:0;pointer-events:none;}
+.loading-spinner{
+  width:40px;height:40px;border:3px solid var(--g2);border-top-color:var(--green);
+  border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:16px;
 }
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-screen p{font-size:14px;color:var(--g4);}
 
-.login-grid{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size:60px 60px;
-  animation:gridMove 20s linear infinite;
-}
-@keyframes gridMove{to{background-position:60px 60px;}}
-
-.login-particles{position:absolute;inset:0;overflow:hidden;}
-.particle{
-  position:absolute;width:2px;height:2px;background:rgba(255,255,255,0.15);border-radius:50%;
-  animation:floatUp linear infinite;
-}
-@keyframes floatUp{
-  0%{transform:translateY(100vh) scale(0);opacity:0;}
-  10%{opacity:1;}
-  90%{opacity:1;}
-  100%{transform:translateY(-10vh) scale(1);opacity:0;}
-}
-
-.login-card{
-  position:relative;width:420px;max-width:90vw;z-index:2;
-}
-
-.login-card-inner{
-  background:rgba(20,20,20,0.8);
-  backdrop-filter:blur(40px);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:24px;
-  padding:48px 40px;
-  box-shadow:var(--shadow-xl);
-}
-
-.login-logo{
-  text-align:center;margin-bottom:40px;
-}
-
-.login-logo-icon{
-  width:64px;height:64px;
-  background:linear-gradient(135deg,var(--green),var(--blue));
-  border-radius:18px;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 16px;
-  font-size:28px;font-weight:900;color:var(--black);
-  font-family:'JetBrains Mono',monospace;
-  box-shadow:0 8px 32px rgba(0,200,83,0.3);
-}
-
-.login-logo h1{
-  font-size:28px;font-weight:800;color:white;letter-spacing:-1px;
-}
-
-.login-logo p{
-  font-size:14px;color:rgba(255,255,255,0.4);margin-top:6px;font-weight:400;
-}
-
-.login-field{margin-bottom:20px;position:relative;}
-
-.login-field label{
-  display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,0.4);
-  text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;
-}
-
-.login-field input{
-  width:100%;padding:14px 18px;
-  background:rgba(255,255,255,0.06);
-  border:1.5px solid rgba(255,255,255,0.1);
-  border-radius:12px;
-  color:white;font-family:'Outfit',sans-serif;font-size:15px;
-  outline:none;transition:all 0.25s;
-}
-
-.login-field input:focus{
-  border-color:var(--green);
-  background:rgba(255,255,255,0.08);
-  box-shadow:0 0 0 4px rgba(0,200,83,0.1);
-}
-
-.login-field input::placeholder{color:rgba(255,255,255,0.2);}
-
-.login-btn{
-  width:100%;padding:15px;margin-top:8px;
-  background:linear-gradient(135deg,var(--green),#00e676);
-  border:none;border-radius:12px;
-  font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;
-  color:var(--black);cursor:pointer;
-  transition:all 0.25s;
-  position:relative;overflow:hidden;
-}
-
-.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,200,83,0.4);}
-.login-btn:active{transform:translateY(0);}
-
-.login-btn .shine{
-  position:absolute;top:0;left:-100%;width:100%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
-  animation:shine 3s infinite;
-}
-@keyframes shine{0%{left:-100%;}50%{left:100%;}100%{left:100%;}}
-
-.login-error{
-  text-align:center;margin-top:16px;font-size:13px;font-weight:500;
-  color:var(--red);opacity:0;transition:opacity 0.3s;height:20px;
-}
-.login-error.show{opacity:1;animation:shake 0.4s ease;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
-
-.login-footer{
-  text-align:center;margin-top:32px;font-size:12px;color:rgba(255,255,255,0.2);
-}
-
-/* ============ APP LAYOUT ============ */
-.app{display:none;}
-.app.active{display:grid;grid-template-columns:260px 1fr;min-height:100vh;animation:fadeIn 0.6s ease;}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+/* LAYOUT */
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
 
 /* SIDEBAR */
 .sidebar{
@@ -184,35 +67,17 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--black);min
   padding:2px 8px;border-radius:20px;font-family:'JetBrains Mono',monospace;
 }
 
-.nav-divider{height:1px;background:var(--g2);margin:12px 8px;}
-
 .sidebar-footer{padding:16px;border-top:1px solid var(--g2);margin-top:12px;}
 .sidebar-footer p{font-size:12px;color:var(--g4);}
-
-.user-info{
-  display:flex;align-items:center;gap:10px;margin-bottom:10px;
-}
-.user-avatar{
-  width:32px;height:32px;border-radius:50%;
-  background:linear-gradient(135deg,var(--green),var(--blue));
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;color:var(--black);
-}
-.user-name{font-size:13px;font-weight:600;color:var(--g6);}
-
-.logout-btn{
-  background:none;border:1px solid var(--g2);border-radius:var(--rs);
-  padding:8px 14px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;
-  color:var(--g5);cursor:pointer;transition:all 0.15s;width:100%;margin-top:8px;
-}
-.logout-btn:hover{border-color:var(--red);color:var(--red);}
+.sidebar-footer .sync-status{display:flex;align-items:center;gap:6px;margin-top:6px;}
+.sidebar-footer .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.sidebar-footer .sync-text{font-size:12px;color:var(--green);font-weight:500;}
 
 /* MAIN */
 .main{padding:32px 40px;overflow-y:auto;}
 
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
 .page-header h1{font-size:26px;font-weight:700;letter-spacing:-0.5px;}
-.page-header-actions{display:flex;gap:10px;align-items:center;}
 
 /* GREETING */
 .greeting{margin-bottom:32px;}
@@ -271,9 +136,9 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--black);min
 .stat-value{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;line-height:1;}
 
 /* TOOLBAR */
-.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
 
-.search-wrapper{position:relative;flex:1;max-width:360px;}
+.search-wrapper{position:relative;flex:1;max-width:360px;min-width:200px;}
 .search-wrapper .si{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--g4);font-size:15px;pointer-events:none;}
 
 .search-input{
@@ -293,6 +158,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--black);min
 }
 .pill:hover{border-color:var(--g3);color:var(--black);}
 .pill.active{background:var(--black);color:white;border-color:var(--black);}
+
+.toolbar-actions{display:flex;gap:10px;}
 
 /* TABLE */
 .table-container{background:var(--white);border:1px solid var(--g2);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-s);}
@@ -427,7 +294,7 @@ tbody tr:hover .row-actions{opacity:1;}
 .sidebar-overlay.active{display:block;}
 
 @media(max-width:900px){
-  .app.active{grid-template-columns:1fr;}
+  .app{grid-template-columns:1fr;}
   .sidebar{position:fixed;left:-280px;width:280px;z-index:400;transition:left 0.3s;box-shadow:var(--shadow-l);}
   .sidebar.open{left:0;}
   .main{padding:20px;}
@@ -442,38 +309,14 @@ tbody tr:hover .row-actions{opacity:1;}
 </head>
 <body>
 
-<!-- ========== LOGIN SCREEN ========== -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-bg"></div>
-  <div class="login-grid"></div>
-  <div class="login-particles" id="particles"></div>
-  <div class="login-card">
-    <div class="login-card-inner">
-      <div class="login-logo">
-        <div class="login-logo-icon">ED</div>
-        <h1>Estoque Danny</h1>
-        <p>Gerenciamento inteligente</p>
-      </div>
-      <div class="login-field">
-        <label>Usuário</label>
-        <input type="text" id="loginUser" placeholder="Digite seu usuário" autocomplete="off" spellcheck="false">
-      </div>
-      <div class="login-field">
-        <label>Senha</label>
-        <input type="password" id="loginPass" placeholder="••••••••">
-      </div>
-      <button class="login-btn" onclick="doLogin()">
-        Entrar
-        <span class="shine"></span>
-      </button>
-      <div class="login-error" id="loginError">Usuário ou senha incorretos</div>
-    </div>
-    <div class="login-footer">© 2026 Estoque Danny</div>
-  </div>
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-spinner"></div>
+  <p>Carregando estoque...</p>
 </div>
 
-<!-- ========== APP ========== -->
-<div class="app" id="app">
+<!-- APP -->
+<div class="app">
   <aside class="sidebar" id="sidebar">
     <div class="logo">
       <div class="logo-mark">ED</div>
@@ -482,14 +325,13 @@ tbody tr:hover .row-actions{opacity:1;}
     <nav class="nav">
       <button class="nav-item active" onclick="switchView('inventory',this)"><span class="icon">📦</span> Estoque</button>
       <button class="nav-item" onclick="switchView('activity',this)"><span class="icon">📋</span> Atividade <span class="nav-badge" id="activityCount">0</span></button>
-      <div class="nav-divider"></div>
     </nav>
     <div class="sidebar-footer">
-      <div class="user-info">
-        <div class="user-avatar">D</div>
-        <span class="user-name">Danny</span>
+      <p>Dados salvos na nuvem</p>
+      <div class="sync-status">
+        <span class="sync-dot"></span>
+        <span class="sync-text">Sincronizado</span>
       </div>
-      <button class="logout-btn" onclick="doLogout()">Sair da conta</button>
     </div>
   </aside>
 
@@ -497,8 +339,8 @@ tbody tr:hover .row-actions{opacity:1;}
     <!-- INVENTORY -->
     <section class="view-section active" id="view-inventory">
       <div class="greeting">
-        <h2>Olá, <span>Danny</span> 👋</h2>
-        <p id="greetingSub">Aqui está seu estoque atualizado</p>
+        <h2 id="greetingText">Olá, <span>Danny</span> 👋</h2>
+        <p>Seu estoque atualizado em tempo real</p>
       </div>
 
       <div class="stats-grid">
@@ -519,7 +361,7 @@ tbody tr:hover .row-actions{opacity:1;}
           <button class="pill" onclick="setFilter('low',this)">Baixo</button>
           <button class="pill" onclick="setFilter('out',this)">Zerado</button>
         </div>
-        <div class="page-header-actions">
+        <div class="toolbar-actions">
           <button class="btn btn-secondary" onclick="exportCSV()">↓ Exportar</button>
           <button class="btn btn-primary" onclick="openModal()">+ Novo item</button>
         </div>
@@ -579,180 +421,251 @@ tbody tr:hover .row-actions{opacity:1;}
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 <div class="toast-container" id="toasts"></div>
 
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 <script>
-// === LOGIN ===
-const CRED={user:'Danny',pass:'Danny251106'};
+// Firebase Config
+firebase.initializeApp({
+  apiKey: "AIzaSyCgQoZZPvC5EqfjtXhVNyBGgWTzqQ6rfO0",
+  authDomain: "danny-f856e.firebaseapp.com",
+  projectId: "danny-f856e",
+  storageBucket: "danny-f856e.firebasestorage.app",
+  messagingSenderId: "352641765556",
+  appId: "1:352641765556:web:1f36379b78344c615347e1"
+});
 
-function createParticles(){
-  const c=document.getElementById('particles');
-  for(let i=0;i<30;i++){
-    const p=document.createElement('div');p.className='particle';
-    p.style.left=Math.random()*100+'%';
-    p.style.animationDuration=(6+Math.random()*8)+'s';
-    p.style.animationDelay=Math.random()*6+'s';
-    p.style.width=p.style.height=(1+Math.random()*2)+'px';
-    c.appendChild(p);
-  }
-}
-createParticles();
+const db = firebase.firestore();
+const productsRef = db.collection('products');
+const activityRef = db.collection('activity');
 
-if(localStorage.getItem('ds_logged')==='true'){showApp();}
+let products = [];
+let activity = [];
+let filter = 'all';
 
-document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
+// === LOAD DATA (realtime) ===
+productsRef.orderBy('createdAt','desc').onSnapshot(snap => {
+  products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  render();
+  hideLoading();
+});
 
-function doLogin(){
-  const u=document.getElementById('loginUser').value.trim();
-  const p=document.getElementById('loginPass').value;
-  if(u===CRED.user&&p===CRED.pass){
-    localStorage.setItem('ds_logged','true');
-    const ls=document.getElementById('loginScreen');
-    ls.classList.add('hiding');
-    setTimeout(()=>{ls.classList.add('hidden');showApp();},500);
-  }else{
-    const err=document.getElementById('loginError');
-    err.classList.remove('show');
-    void err.offsetWidth;
-    err.classList.add('show');
-  }
-}
+activityRef.orderBy('time','desc').limit(50).onSnapshot(snap => {
+  activity = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderAct();
+});
 
-function doLogout(){
-  localStorage.removeItem('ds_logged');
-  location.reload();
+function hideLoading(){
+  const el = document.getElementById('loadingScreen');
+  el.classList.add('hide');
+  setTimeout(() => el.style.display = 'none', 500);
 }
 
-function showApp(){
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('app').classList.add('active');
-  updateGreeting();
-  render();renderAct();
-}
+// === GREETING ===
+(function(){
+  const h = new Date().getHours();
+  let g = 'Bom dia';
+  if(h >= 12 && h < 18) g = 'Boa tarde';
+  if(h >= 18) g = 'Boa noite';
+  document.getElementById('greetingText').innerHTML = `${g}, <span>Danny</span> 👋`;
+})();
 
-function updateGreeting(){
-  const h=new Date().getHours();
-  let g='Bom dia';if(h>=12&&h<18)g='Boa tarde';if(h>=18)g='Boa noite';
-  document.querySelector('.greeting h2').innerHTML=`${g}, <span>Danny</span> 👋`;
-}
-
-// === DATA ===
-let products=JSON.parse(localStorage.getItem('ds_products')||'[]');
-let activity=JSON.parse(localStorage.getItem('ds_activity')||'[]');
-let filter='all';
-
-const save=()=>localStorage.setItem('ds_products',JSON.stringify(products));
-const saveAct=()=>localStorage.setItem('ds_activity',JSON.stringify(activity));
-const getStatus=p=>p.qty===0?'out':p.qty<=p.min?'low':'ok';
-const statusLabel=s=>s==='ok'?'Em estoque':s==='low'?'Baixo':'Sem estoque';
+// === RENDER ===
+const getStatus = p => p.qty === 0 ? 'out' : p.qty <= p.min ? 'low' : 'ok';
+const statusLabel = s => s === 'ok' ? 'Em estoque' : s === 'low' ? 'Baixo' : 'Sem estoque';
 
 function render(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  const list=products.filter(p=>{
-    const m=p.name.toLowerCase().includes(q)||p.sku.toLowerCase().includes(q);
-    return m&&(filter==='all'||getStatus(p)===filter);
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const list = products.filter(p => {
+    const m = p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
+    return m && (filter === 'all' || getStatus(p) === filter);
   });
-  const tbody=document.getElementById('tbody'),empty=document.getElementById('emptyState'),area=document.getElementById('tableArea');
+
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('emptyState');
+  const area = document.getElementById('tableArea');
 
   if(!products.length){
-    area.style.display='none';empty.style.display='block';
-    document.getElementById('emptyTitle').textContent='Nenhum item ainda';
-    document.getElementById('emptySub').textContent='Adicione seu primeiro produto';
-  }else if(!list.length){
-    area.style.display='none';empty.style.display='block';
-    document.getElementById('emptyTitle').textContent='Nenhum resultado';
-    document.getElementById('emptySub').textContent='Tente outro filtro ou busca';
-  }else{
-    area.style.display='block';empty.style.display='none';
-    tbody.innerHTML=list.map(p=>{
-      const s=getStatus(p),t=(p.qty*p.price).toFixed(2);
-      return`<tr><td><div class="product-info"><span class="product-name">${p.name}</span><span class="product-sku">${p.sku}</span></div></td><td><span class="category-chip">${p.cat}</span></td><td><span class="qty-display">${p.qty}</span></td><td><span class="price-display">R$ ${p.price.toFixed(2)}</span></td><td><span class="price-display">R$ ${t}</span></td><td><span class="status-badge status-${s}"><span class="dot"></span>${statusLabel(s)}</span></td><td><div class="row-actions"><button class="btn-icon" onclick="editProduct(${p.id})" title="Editar">✎</button><button class="btn-icon danger" onclick="deleteProduct(${p.id})" title="Excluir">✕</button></div></td></tr>`;
+    area.style.display = 'none'; empty.style.display = 'block';
+    document.getElementById('emptyTitle').textContent = 'Nenhum item ainda';
+    document.getElementById('emptySub').textContent = 'Adicione seu primeiro produto';
+  } else if(!list.length){
+    area.style.display = 'none'; empty.style.display = 'block';
+    document.getElementById('emptyTitle').textContent = 'Nenhum resultado';
+    document.getElementById('emptySub').textContent = 'Tente outro filtro ou busca';
+  } else {
+    area.style.display = 'block'; empty.style.display = 'none';
+    tbody.innerHTML = list.map(p => {
+      const s = getStatus(p), t = (p.qty * p.price).toFixed(2);
+      return `<tr>
+        <td><div class="product-info"><span class="product-name">${p.name}</span><span class="product-sku">${p.sku}</span></div></td>
+        <td><span class="category-chip">${p.cat}</span></td>
+        <td><span class="qty-display">${p.qty}</span></td>
+        <td><span class="price-display">R$ ${p.price.toFixed(2)}</span></td>
+        <td><span class="price-display">R$ ${t}</span></td>
+        <td><span class="status-badge status-${s}"><span class="dot"></span>${statusLabel(s)}</span></td>
+        <td><div class="row-actions">
+          <button class="btn-icon" onclick="editProduct('${p.id}')" title="Editar">✎</button>
+          <button class="btn-icon danger" onclick="deleteProduct('${p.id}')" title="Excluir">✕</button>
+        </div></td>
+      </tr>`;
     }).join('');
-    const gt=list.reduce((a,p)=>a+p.qty*p.price,0);
-    document.getElementById('totalBar').innerHTML=`Valor em estoque: <strong>R$ ${gt.toFixed(2)}</strong>`;
+
+    const gt = list.reduce((a,p) => a + p.qty * p.price, 0);
+    document.getElementById('totalBar').innerHTML = `Valor em estoque: <strong>R$ ${gt.toFixed(2)}</strong>`;
   }
-  const ok=products.filter(p=>getStatus(p)==='ok').length,low=products.filter(p=>getStatus(p)==='low').length,out=products.filter(p=>getStatus(p)==='out').length;
-  document.getElementById('sTotal').textContent=products.length;
-  document.getElementById('sOk').textContent=ok;
-  document.getElementById('sLow').textContent=low;
-  document.getElementById('sOut').textContent=out;
-  document.getElementById('activityCount').textContent=activity.length;
+
+  const ok = products.filter(p => getStatus(p)==='ok').length;
+  const low = products.filter(p => getStatus(p)==='low').length;
+  const out = products.filter(p => getStatus(p)==='out').length;
+  document.getElementById('sTotal').textContent = products.length;
+  document.getElementById('sOk').textContent = ok;
+  document.getElementById('sLow').textContent = low;
+  document.getElementById('sOut').textContent = out;
+  document.getElementById('activityCount').textContent = activity.length;
 }
 
-function setFilter(f,el){filter=f;document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');render();}
+function setFilter(f, el){
+  filter = f;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
 
+// === MODAL ===
 function openModal(){
   document.getElementById('modal').classList.add('active');
-  document.getElementById('modalTitle').textContent='Novo item';
-  ['editId','fName','fSku','fQty','fPrice'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('fCat').value='Geral';document.getElementById('fMin').value='5';
-  setTimeout(()=>document.getElementById('fName').focus(),100);
+  document.getElementById('modalTitle').textContent = 'Novo item';
+  ['editId','fName','fSku','fQty','fPrice'].forEach(i => document.getElementById(i).value = '');
+  document.getElementById('fCat').value = 'Geral';
+  document.getElementById('fMin').value = '5';
+  setTimeout(() => document.getElementById('fName').focus(), 100);
 }
-function closeModal(){document.getElementById('modal').classList.remove('active');}
+
+function closeModal(){ document.getElementById('modal').classList.remove('active'); }
 
 function editProduct(id){
-  const p=products.find(x=>x.id===id);if(!p)return;
+  const p = products.find(x => x.id === id);
+  if(!p) return;
   document.getElementById('modal').classList.add('active');
-  document.getElementById('modalTitle').textContent='Editar item';
-  document.getElementById('editId').value=id;
-  document.getElementById('fName').value=p.name;document.getElementById('fSku').value=p.sku;
-  document.getElementById('fCat').value=p.cat;document.getElementById('fQty').value=p.qty;
-  document.getElementById('fPrice').value=p.price;document.getElementById('fMin').value=p.min;
+  document.getElementById('modalTitle').textContent = 'Editar item';
+  document.getElementById('editId').value = id;
+  document.getElementById('fName').value = p.name;
+  document.getElementById('fSku').value = p.sku;
+  document.getElementById('fCat').value = p.cat;
+  document.getElementById('fQty').value = p.qty;
+  document.getElementById('fPrice').value = p.price;
+  document.getElementById('fMin').value = p.min;
 }
 
-function saveProduct(){
-  const name=document.getElementById('fName').value.trim(),sku=document.getElementById('fSku').value.trim();
-  const cat=document.getElementById('fCat').value,qty=parseInt(document.getElementById('fQty').value)||0;
-  const price=parseFloat(document.getElementById('fPrice').value)||0,min=parseInt(document.getElementById('fMin').value)||5;
-  if(!name)return toast('Preencha o nome','⚠️');if(!sku)return toast('Preencha o SKU','⚠️');
-  const eid=document.getElementById('editId').value;
-  if(eid){const p=products.find(x=>x.id===parseInt(eid));if(p){Object.assign(p,{name,sku,cat,qty,price,min});logAct('edit',`Editou <strong>${name}</strong>`);toast('Atualizado','✅');}}
-  else{const id=products.length?Math.max(...products.map(p=>p.id))+1:1;products.push({id,name,sku,cat,qty,price,min});logAct('add',`Adicionou <strong>${name}</strong>`);toast('Adicionado','✅');}
-  save();render();closeModal();
+async function saveProduct(){
+  const name = document.getElementById('fName').value.trim();
+  const sku = document.getElementById('fSku').value.trim();
+  const cat = document.getElementById('fCat').value;
+  const qty = parseInt(document.getElementById('fQty').value) || 0;
+  const price = parseFloat(document.getElementById('fPrice').value) || 0;
+  const min = parseInt(document.getElementById('fMin').value) || 5;
+
+  if(!name) return toast('Preencha o nome','⚠️');
+  if(!sku) return toast('Preencha o SKU','⚠️');
+
+  const eid = document.getElementById('editId').value;
+
+  try {
+    if(eid){
+      await productsRef.doc(eid).update({ name, sku, cat, qty, price, min });
+      await logAct('edit', `Editou <strong>${name}</strong>`);
+      toast('Atualizado','✅');
+    } else {
+      await productsRef.add({ name, sku, cat, qty, price, min, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      await logAct('add', `Adicionou <strong>${name}</strong>`);
+      toast('Adicionado','✅');
+    }
+    closeModal();
+  } catch(e){
+    toast('Erro ao salvar','❌');
+    console.error(e);
+  }
 }
 
-function deleteProduct(id){
-  const p=products.find(x=>x.id===id);if(!p||!confirm(`Excluir "${p.name}"?`))return;
-  products=products.filter(x=>x.id!==id);logAct('delete',`Removeu <strong>${p.name}</strong>`);save();render();toast('Removido','🗑️');
+async function deleteProduct(id){
+  const p = products.find(x => x.id === id);
+  if(!p || !confirm(`Excluir "${p.name}"?`)) return;
+  try {
+    await productsRef.doc(id).delete();
+    await logAct('delete', `Removeu <strong>${p.name}</strong>`);
+    toast('Removido','🗑️');
+  } catch(e){
+    toast('Erro ao remover','❌');
+  }
 }
 
+// === EXPORT ===
 function exportCSV(){
-  if(!products.length)return toast('Nada para exportar','⚠️');
-  const csv='Nome,SKU,Categoria,Quantidade,Preço,Estoque Mínimo\n'+products.map(p=>`"${p.name}","${p.sku}","${p.cat}",${p.qty},${p.price},${p.min}`).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
-  a.download=`estoque_danny_${new Date().toISOString().slice(0,10)}.csv`;a.click();toast('CSV exportado','📄');
+  if(!products.length) return toast('Nada para exportar','⚠️');
+  const csv = 'Nome,SKU,Categoria,Quantidade,Preço,Estoque Mínimo\n' +
+    products.map(p => `"${p.name}","${p.sku}","${p.cat}",${p.qty},${p.price},${p.min}`).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download = `estoque_danny_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('CSV exportado','📄');
 }
 
-function logAct(type,text){activity.unshift({type,text,time:Date.now()});if(activity.length>50)activity.pop();saveAct();renderAct();}
+// === ACTIVITY ===
+async function logAct(type, text){
+  await activityRef.add({ type, text, time: Date.now() });
+}
 
 function renderAct(){
-  const el=document.getElementById('activityList');document.getElementById('activityCount').textContent=activity.length;
-  if(!activity.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">📋</div><h3>Sem atividades</h3><p>Ações aparecerão aqui</p></div>';return;}
-  el.innerHTML=activity.map(a=>{
-    const d=Date.now()-a.time,m=Math.floor(d/60000);
-    const ago=m<1?'agora':m<60?m+'min':m<1440?Math.floor(m/60)+'h':Math.floor(m/1440)+'d';
-    return`<div class="activity-item"><span class="activity-dot ${a.type}"></span><span class="activity-text">${a.text}</span><span class="activity-time">${ago}</span></div>`;
+  const el = document.getElementById('activityList');
+  document.getElementById('activityCount').textContent = activity.length;
+  if(!activity.length){
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><h3>Sem atividades</h3><p>Ações aparecerão aqui</p></div>';
+    return;
+  }
+  el.innerHTML = activity.map(a => {
+    const d = Date.now() - a.time, m = Math.floor(d/60000);
+    const ago = m<1?'agora':m<60?m+'min':m<1440?Math.floor(m/60)+'h':Math.floor(m/1440)+'d';
+    return `<div class="activity-item"><span class="activity-dot ${a.type}"></span><span class="activity-text">${a.text}</span><span class="activity-time">${ago}</span></div>`;
   }).join('');
 }
 
-function clearActivity(){activity=[];saveAct();renderAct();toast('Limpo','🗑️');}
+async function clearActivity(){
+  const batch = db.batch();
+  activity.forEach(a => batch.delete(activityRef.doc(a.id)));
+  await batch.commit();
+  toast('Limpo','🗑️');
+}
 
-function switchView(v,el){
-  document.querySelectorAll('.view-section').forEach(s=>s.classList.remove('active'));
+// === VIEWS ===
+function switchView(v, el){
+  document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
   document.getElementById('view-'+v).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  el.classList.add('active');if(v==='activity')renderAct();
-  document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  if(v === 'activity') renderAct();
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('active');
 }
 
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('active');}
-
-function toast(msg,icon=''){
-  const c=document.getElementById('toasts'),el=document.createElement('div');el.className='toast';el.innerHTML=`${icon} ${msg}`;
-  c.appendChild(el);setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),300);},2800);
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('active');
 }
 
-document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+// === TOAST ===
+function toast(msg, icon=''){
+  const c = document.getElementById('toasts'), el = document.createElement('div');
+  el.className = 'toast'; el.innerHTML = `${icon} ${msg}`;
+  c.appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 2800);
+}
+
+// === SHORTCUTS ===
+document.getElementById('modal').addEventListener('click', e => { if(e.target === e.currentTarget) closeModal(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 </script>
 </body>
 </html>
