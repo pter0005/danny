@@ -363,15 +363,13 @@ tbody tr:hover .row-actions{opacity:1;}
   <main class="main">
     <!-- NOTICE BANNER (non-blocking) -->
     <div class="notice-banner" id="noticeBanner">
-      <div class="notice-icon" id="noticeIcon">⏰</div>
+      <div class="notice-icon" id="noticeIcon">🔔</div>
       <div class="notice-text">
-        <strong id="noticeTitle">Danny, seu pagamento mensal está pendente</strong>
-        <span id="noticeSub">Renove sua assinatura pra continuar com tudo funcionando.</span>
+        <strong id="noticeTitle">Avisar Danny: pagamento mensal vencido</strong>
+        <span id="noticeSub">Repasse o aviso pra ele renovar o plano e manter o sistema ativo.</span>
       </div>
       <div class="notice-actions">
-        <button class="notice-btn notice-btn-card" onclick="payWithCard()">💳 Cartão</button>
-        <button class="notice-btn notice-btn-pix" onclick="payWithPix()">⚡ PIX</button>
-        <button class="notice-close" onclick="dismissNotice()" title="Lembrar depois">✕</button>
+        <button class="notice-close" onclick="dismissNotice()" title="Ocultar nesta sessão">✕</button>
       </div>
     </div>
 
@@ -631,25 +629,25 @@ function showNotice(sub){
   banner.classList.remove('warn','danger','info');
 
   if(!sub){
-    icon.textContent='💳';banner.classList.add('info');
-    title.textContent='Danny, ative seu plano mensal';
-    subEl.textContent='Mantenha seu acesso ao Estoque Danny — escolha cartão recorrente ou PIX.';
+    icon.textContent='🔔';banner.classList.add('info');
+    title.textContent='Avisar Danny: plano mensal não está ativo';
+    subEl.textContent='Repasse pra ele ativar a assinatura — sem isso o sistema fica sem cobertura.';
   }else if(sub.status==='overdue'){
     icon.textContent='⚠️';banner.classList.add('danger');
-    title.textContent='Danny, pagamento não autorizado';
-    subEl.textContent='O último pagamento falhou. Atualize sua forma de pagamento.';
+    title.textContent='Avisar Danny: pagamento não autorizado';
+    subEl.textContent='O último pagamento falhou. Repasse pra ele verificar a forma de pagamento.';
   }else if(sub.status==='cancelled'){
-    icon.textContent='⏸️';banner.classList.add('warn');
-    title.textContent='Danny, sua assinatura foi cancelada';
-    subEl.textContent='Reative pra continuar usando o sistema.';
+    icon.textContent='🚫';banner.classList.add('warn');
+    title.textContent='Avisar Danny: assinatura cancelada';
+    subEl.textContent='Repasse pra ele reativar quando puder.';
   }else if(sub.status==='paused'){
     icon.textContent='⏸️';banner.classList.add('warn');
-    title.textContent='Danny, sua assinatura está pausada';
-    subEl.textContent='Reative pra continuar usando o sistema.';
+    title.textContent='Avisar Danny: assinatura pausada';
+    subEl.textContent='Repasse pra ele reativar quando puder.';
   }else{
     icon.textContent='⏰';banner.classList.add('warn');
-    title.textContent='Danny, seu pagamento mensal está pendente';
-    subEl.textContent='Renove sua assinatura pra continuar com tudo funcionando.';
+    title.textContent='Avisar Danny: pagamento mensal vencido';
+    subEl.textContent='Repasse o aviso pra ele renovar o plano e manter o sistema ativo.';
   }
   banner.classList.add('active');
 }
