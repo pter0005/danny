@@ -351,7 +351,7 @@ tbody tr:hover .row-actions{opacity:1;}
       <button class="nav-item" onclick="switchView('movements',this)"><span class="icon">📊</span> Entradas/Saídas</button>
       <button class="nav-item" onclick="switchView('alerts',this)"><span class="icon">🔔</span> Avisos <span class="nav-badge warn hide" id="alertCount">0</span></button>
       <button class="nav-item" onclick="switchView('activity',this)"><span class="icon">📋</span> Atividade <span class="nav-badge hide" id="activityCount">0</span></button>
-      <button class="nav-item" onclick="switchView('subscription',this)"><span class="icon">💳</span> Assinatura <span class="nav-badge warn hide" id="subBadge">!</span></button>
+      <button class="nav-item" onclick="switchView('subscription',this)"><span class="icon">💳</span> Assinatura</button>
     </nav>
     <div class="sidebar-footer">
       <p>Dados salvos na nuvem</p>
@@ -361,18 +361,6 @@ tbody tr:hover .row-actions{opacity:1;}
   </aside>
 
   <main class="main">
-    <!-- NOTICE BANNER (non-blocking) -->
-    <div class="notice-banner" id="noticeBanner">
-      <div class="notice-icon" id="noticeIcon">🔔</div>
-      <div class="notice-text">
-        <strong id="noticeTitle">Avisar Danny: pagamento mensal vencido</strong>
-        <span id="noticeSub">Repasse o aviso pra ele renovar o plano e manter o sistema ativo.</span>
-      </div>
-      <div class="notice-actions">
-        <button class="notice-close" onclick="dismissNotice()" title="Ocultar nesta sessão">✕</button>
-      </div>
-    </div>
-
     <!-- INVENTORY -->
     <section class="view-section active" id="view-inventory">
       <div class="greeting"><h2 id="greetingText">Olá, <span>Danny</span> 👋</h2><p>Seu estoque atualizado em tempo real</p></div>
@@ -434,49 +422,34 @@ tbody tr:hover .row-actions{opacity:1;}
     <!-- SUBSCRIPTION -->
     <section class="view-section" id="view-subscription">
       <div class="sub-hero">
-        <div class="sub-hero-status" id="subHeroStatus"><span class="sd"></span><span id="subHeroStatusText">Carregando...</span></div>
-        <h2>Plano Estoque Danny</h2>
-        <p id="subHeroDesc">Acesso completo ao sistema de gestão de estoque na nuvem.</p>
-      </div>
-
-      <div class="sub-explainer">
-        <h3>O que você tem com o plano</h3>
-        <ul>
-          <li>Cadastro ilimitado de produtos com código, preço e estoque mínimo</li>
-          <li>Controle de entradas e saídas com histórico completo</li>
-          <li>Avisos automáticos de produtos com estoque baixo ou zerado</li>
-          <li>Dados sincronizados na nuvem em tempo real (acessa de qualquer lugar)</li>
-          <li>Backup completo em JSON quando quiser</li>
-          <li>Suporte e manutenção técnica do sistema</li>
-        </ul>
+        <h2>Mensalidade do sistema</h2>
+        <p>Espacinho pra renovar a mensalidade do Estoque Danny quando for hora 💚</p>
       </div>
 
       <div class="sub-grid">
-        <div class="sub-info-card"><div class="lbl">Valor mensal</div><div class="val">R$ 45,60</div><div class="sub">Cartão recorrente ou PIX único</div></div>
-        <div class="sub-info-card"><div class="lbl">Acesso até</div><div class="val" id="subNextDate">—</div><div class="sub" id="subNextRel">—</div></div>
-        <div class="sub-info-card"><div class="lbl">Último pagamento</div><div class="val" id="subLastDate">—</div><div class="sub" id="subLastAmount">—</div></div>
+        <div class="sub-info-card"><div class="lbl">Valor</div><div class="val">R$ 45,60</div><div class="sub">por mês</div></div>
+        <div class="sub-info-card"><div class="lbl">Última renovação</div><div class="val" id="subLastDate">—</div><div class="sub" id="subLastAmount">—</div></div>
+        <div class="sub-info-card"><div class="lbl">Próxima</div><div class="val" id="subNextDate">—</div><div class="sub" id="subNextRel">—</div></div>
       </div>
 
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Como você prefere pagar?</h3>
+      <h3 style="font-size:15px;font-weight:600;margin-bottom:12px;color:var(--g6);">Formas de pagamento</h3>
       <div class="pay-options">
         <button class="pay-card card" onclick="payWithCard()">
           <div class="pay-card-icon">💳</div>
-          <span class="pay-card-tag">Recomendado</span>
-          <div class="pay-card-title">Cartão de crédito</div>
-          <div class="pay-card-sub">Cobrança automática todo mês. Cancele quando quiser direto no MercadoPago.</div>
+          <div class="pay-card-title">Cartão</div>
+          <div class="pay-card-sub">Cobrança automática mensal — não precisa lembrar de pagar.</div>
           <div class="pay-card-price">R$ 45,60 <small>/mês</small></div>
         </button>
         <button class="pay-card pix" onclick="payWithPix()">
           <div class="pay-card-icon">⚡</div>
-          <span class="pay-card-tag">Pagamento único</span>
           <div class="pay-card-title">PIX</div>
-          <div class="pay-card-sub">Paga uma vez e libera 30 dias de acesso. Sem cobrança automática.</div>
-          <div class="pay-card-price">R$ 45,60 <small>/30 dias</small></div>
+          <div class="pay-card-sub">Paga quando puder, libera 30 dias.</div>
+          <div class="pay-card-price">R$ 45,60</div>
         </button>
       </div>
 
       <div class="sub-actions">
-        <button class="btn btn-secondary" onclick="refreshSubscription()">↻ Já paguei — atualizar status</button>
+        <button class="btn btn-secondary" onclick="refreshSubscription()">↻ Atualizar status</button>
       </div>
 
       <div style="margin-top:32px;">
@@ -562,7 +535,7 @@ function doLogin(){
     btn.disabled=false;btn.textContent='Entrar';err.textContent='Email ou senha incorretos';err.classList.remove('show');void err.offsetWidth;err.classList.add('show');
   });
 }
-function doLogout(){if(unsubP)unsubP();if(unsubA)unsubA();if(unsubM)unsubM();if(unsubS)unsubS();if(unsubPH)unsubPH();subscription=null;paymentHistory=[];hideNotice();sessionStorage.removeItem('noticeDismissed');auth.signOut();}
+function doLogout(){if(unsubP)unsubP();if(unsubA)unsubA();if(unsubM)unsubM();if(unsubS)unsubS();if(unsubPH)unsubPH();subscription=null;paymentHistory=[];auth.signOut();}
 function showLogin(){document.getElementById('loginScreen').classList.remove('hidden','hiding');document.getElementById('loginScreen').style.display='flex';document.getElementById('app').classList.remove('active');document.getElementById('loadingScreen').style.display='none';}
 function showApp(){
   var ls=document.getElementById('loginScreen');ls.classList.add('hiding');
@@ -605,85 +578,17 @@ function startListeners(){
   }
 }
 
-// ───── SUBSCRIPTION NOTICE (non-blocking banner) ─────
-function checkAccess(){
-  var u=auth.currentUser;
-  if(!u)return;
-  var badge=document.getElementById('subBadge');
-
-  if(isAdminEmail(u.email)){hideNotice();badge.classList.add('hide');return;}
-  if(isSubActive(subscription)){hideNotice();badge.classList.add('hide');return;}
-
-  // Sub expired/missing/overdue — show notice (NOT blocking)
-  badge.classList.remove('hide');
-  if(sessionStorage.getItem('noticeDismissed')==='1')return;
-  showNotice(subscription);
-}
-
-function showNotice(sub){
-  var banner=document.getElementById('noticeBanner');
-  var icon=document.getElementById('noticeIcon');
-  var title=document.getElementById('noticeTitle');
-  var subEl=document.getElementById('noticeSub');
-
-  banner.classList.remove('warn','danger','info');
-
-  if(!sub){
-    icon.textContent='🔔';banner.classList.add('info');
-    title.textContent='Avisar Danny: plano mensal não está ativo';
-    subEl.textContent='Repasse pra ele ativar a assinatura — sem isso o sistema fica sem cobertura.';
-  }else if(sub.status==='overdue'){
-    icon.textContent='⚠️';banner.classList.add('danger');
-    title.textContent='Avisar Danny: pagamento não autorizado';
-    subEl.textContent='O último pagamento falhou. Repasse pra ele verificar a forma de pagamento.';
-  }else if(sub.status==='cancelled'){
-    icon.textContent='🚫';banner.classList.add('warn');
-    title.textContent='Avisar Danny: assinatura cancelada';
-    subEl.textContent='Repasse pra ele reativar quando puder.';
-  }else if(sub.status==='paused'){
-    icon.textContent='⏸️';banner.classList.add('warn');
-    title.textContent='Avisar Danny: assinatura pausada';
-    subEl.textContent='Repasse pra ele reativar quando puder.';
-  }else{
-    icon.textContent='⏰';banner.classList.add('warn');
-    title.textContent='Avisar Danny: pagamento mensal vencido';
-    subEl.textContent='Repasse o aviso pra ele renovar o plano e manter o sistema ativo.';
-  }
-  banner.classList.add('active');
-}
-function hideNotice(){document.getElementById('noticeBanner').classList.remove('active');}
-function dismissNotice(){hideNotice();sessionStorage.setItem('noticeDismissed','1');toast('Aviso ocultado nesta sessão','ℹ️');}
+// Sem banner de aviso — sistema sempre acessível.
+// Status da mensalidade fica só na aba Assinatura, sem urgência/ameaça.
+function checkAccess(){/* no-op: app nunca bloqueia ou avisa o usuário */}
 
 function renderSubscription(){
-  var statusEl=document.getElementById('subHeroStatus');
-  var statusText=document.getElementById('subHeroStatusText');
-  var desc=document.getElementById('subHeroDesc');
   var nextDate=document.getElementById('subNextDate');
   var nextRel=document.getElementById('subNextRel');
   var lastDate=document.getElementById('subLastDate');
   var lastAmount=document.getElementById('subLastAmount');
-  var u=auth.currentUser;
 
-  // Hero status
-  statusEl.classList.remove('active','overdue','pending');
-  if(isAdminEmail(u&&u.email)){
-    statusEl.classList.add('active');statusText.textContent='Acesso administrador';
-    desc.textContent='Você tem acesso de admin — assinatura não é cobrada da sua conta.';
-  }else if(isSubActive(subscription)){
-    statusEl.classList.add('active');statusText.textContent='Assinatura ativa';
-    desc.textContent='Tudo certo! Sua assinatura está em dia e o sistema renova automático.';
-  }else if(subscription&&subscription.status==='overdue'){
-    statusEl.classList.add('overdue');statusText.textContent='Pagamento pendente';
-    desc.textContent='O último pagamento não foi autorizado. Atualize abaixo.';
-  }else if(subscription){
-    statusEl.classList.add('overdue');statusText.textContent=(subscription.status||'inativa').toString().toUpperCase();
-    desc.textContent='Sua assinatura precisa de atenção.';
-  }else{
-    statusEl.classList.add('pending');statusText.textContent='Sem assinatura';
-    desc.textContent='Cadastre seu cartão pra começar a usar o sistema.';
-  }
-
-  // Next + last dates
+  // Next + last dates (sem badge de status — só info útil)
   var nd=tsToDate(subscription&&subscription.nextPaymentAt);
   var au=tsToDate(subscription&&subscription.activeUntil);
   var ref=nd||au;
@@ -692,7 +597,7 @@ function renderSubscription(){
 
   var lp=tsToDate(subscription&&subscription.lastPaymentAt);
   lastDate.textContent=fmtDate(lp);
-  lastAmount.textContent=subscription&&subscription.lastPaymentAmount?'R$ '+Number(subscription.lastPaymentAmount).toFixed(2):'—';
+  lastAmount.textContent=subscription&&subscription.lastPaymentAmount?'R$ '+Number(subscription.lastPaymentAmount).toFixed(2).replace('.',','):'—';
 
   // History
   var hl=document.getElementById('subHistoryList');
@@ -701,7 +606,7 @@ function renderSubscription(){
   }else{
     hl.innerHTML=paymentHistory.map(function(p){
       var d=tsToDate(p.paidAt);
-      return '<div class="sub-history-item"><span class="sub-history-date">'+fmtDate(d)+'</span><span class="sub-history-amount">+ R$ '+Number(p.amount||0).toFixed(2)+'</span></div>';
+      return '<div class="sub-history-item"><span class="sub-history-date">'+fmtDate(d)+'</span><span class="sub-history-amount">+ R$ '+Number(p.amount||0).toFixed(2).replace('.',',')+'</span></div>';
     }).join('');
   }
 }
