@@ -238,6 +238,25 @@ tbody tr:hover .row-actions{opacity:1;}
 @keyframes toastOut{to{opacity:0;transform:translateY(12px) scale(0.95);}}
 
 /* SUBSCRIPTION */
+.sub-explainer{background:var(--white);border:1px solid var(--g2);border-radius:var(--r);padding:28px 32px;margin-bottom:20px;}
+.sub-explainer h3{font-size:18px;font-weight:700;margin-bottom:12px;}
+.sub-explainer ul{list-style:none;padding:0;margin:0;}
+.sub-explainer li{padding:8px 0;font-size:14px;color:var(--g6);display:flex;align-items:flex-start;gap:10px;}
+.sub-explainer li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;}
+.pay-options{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.pay-card{background:var(--white);border:2px solid var(--g2);border-radius:var(--r);padding:24px;cursor:pointer;transition:all 0.2s;text-align:left;font-family:'Outfit',sans-serif;}
+.pay-card:hover{border-color:var(--black);transform:translateY(-2px);box-shadow:var(--shadow-m);}
+.pay-card-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;}
+.pay-card.card .pay-card-icon{background:var(--blue-bg);}
+.pay-card.pix .pay-card-icon{background:var(--green-bg);}
+.pay-card-title{font-size:16px;font-weight:700;margin-bottom:6px;}
+.pay-card-sub{font-size:13px;color:var(--g5);line-height:1.5;margin-bottom:14px;}
+.pay-card-price{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;}
+.pay-card-price small{font-size:12px;color:var(--g5);font-weight:500;}
+.pay-card-tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:50px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.pay-card.card .pay-card-tag{background:var(--blue-bg);color:#1565c0;}
+.pay-card.pix .pay-card-tag{background:var(--green-bg);color:#00873a;}
+.pay-card[disabled]{opacity:0.6;cursor:not-allowed;}
 .sub-hero{background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%);color:#fff;border-radius:20px;padding:32px;margin-bottom:24px;position:relative;overflow:hidden;}
 .sub-hero::before{content:'';position:absolute;top:-50%;right:-20%;width:400px;height:400px;background:radial-gradient(circle,rgba(0,200,83,0.18) 0%,transparent 70%);pointer-events:none;}
 .sub-hero-status{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:50px;font-size:12px;font-weight:600;margin-bottom:14px;background:rgba(255,255,255,0.1);}
@@ -265,21 +284,29 @@ tbody tr:hover .row-actions{opacity:1;}
 .sub-history-date{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--g5);}
 .sub-history-amount{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--green);}
 
-/* PAYWALL */
-.paywall{position:fixed;inset:0;z-index:9997;background:rgba(10,10,10,0.7);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px;}
-.paywall.active{display:flex;}
-.paywall-card{background:var(--white);border-radius:24px;width:480px;max-width:100%;padding:40px;box-shadow:var(--shadow-xl);animation:modalIn 0.4s cubic-bezier(0.16,1,0.3,1);text-align:center;}
-.paywall-icon{width:72px;height:72px;background:var(--orange-bg);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:36px;}
-.paywall-card.expired .paywall-icon{background:var(--red-bg);}
-.paywall-card h2{font-size:24px;font-weight:800;margin-bottom:10px;letter-spacing:-0.5px;}
-.paywall-card p{color:var(--g5);font-size:14px;margin-bottom:24px;line-height:1.55;}
-.paywall-price{background:var(--g1);border-radius:var(--rs);padding:18px;margin-bottom:24px;}
-.paywall-price-val{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:800;}
-.paywall-price-label{font-size:13px;color:var(--g5);font-weight:500;}
-.paywall-btn{width:100%;padding:16px;background:var(--green);color:var(--black);border:none;border-radius:var(--rs);font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;}
-.paywall-btn:hover{background:#00b348;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,200,83,0.3);}
-.paywall-secondary{background:none;border:none;color:var(--g5);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;padding:8px;text-decoration:underline;}
-.paywall-secondary:hover{color:var(--black);}
+/* NOTICE BANNER (non-blocking, shown at top of main) */
+.notice-banner{display:none;border-radius:var(--r);padding:16px 20px;margin-bottom:24px;align-items:center;gap:14px;animation:slideIn 0.4s cubic-bezier(0.16,1,0.3,1);}
+.notice-banner.active{display:flex;}
+.notice-banner.warn{background:linear-gradient(135deg,#fff3e0 0%,#ffe9c4 100%);border:1px solid #ffc370;border-left:4px solid var(--orange);}
+.notice-banner.danger{background:linear-gradient(135deg,#ffe8ed 0%,#ffd0d8 100%);border:1px solid #ffa3b1;border-left:4px solid var(--red);}
+.notice-banner.info{background:linear-gradient(135deg,#e3f0ff 0%,#c4daff 100%);border:1px solid #8fb6ff;border-left:4px solid var(--blue);}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:none;}}
+.notice-icon{font-size:24px;flex-shrink:0;}
+.notice-text{flex:1;min-width:0;}
+.notice-text strong{display:block;font-size:14px;font-weight:700;color:var(--black);}
+.notice-text span{display:block;font-size:13px;color:var(--g6);margin-top:2px;}
+.notice-actions{display:flex;gap:8px;align-items:center;flex-shrink:0;}
+.notice-btn{padding:8px 14px;border-radius:var(--rs);border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.notice-btn-card{background:var(--black);color:white;}
+.notice-btn-card:hover{background:var(--g6);}
+.notice-btn-pix{background:var(--green);color:var(--black);}
+.notice-btn-pix:hover{background:#00b348;}
+.notice-close{width:30px;height:30px;border-radius:50%;border:none;background:rgba(0,0,0,0.08);cursor:pointer;font-size:13px;color:var(--g6);transition:all 0.15s;}
+.notice-close:hover{background:rgba(0,0,0,0.15);}
+@media(max-width:900px){
+  .notice-banner{flex-wrap:wrap;}
+  .notice-actions{width:100%;justify-content:flex-end;margin-top:6px;}
+}
 
 /* MOBILE */
 .mobile-toggle{display:none;position:fixed;bottom:20px;left:20px;z-index:401;width:50px;height:50px;border-radius:50%;background:var(--black);color:white;border:none;font-size:20px;cursor:pointer;box-shadow:var(--shadow-l);align-items:center;justify-content:center;}
@@ -334,6 +361,20 @@ tbody tr:hover .row-actions{opacity:1;}
   </aside>
 
   <main class="main">
+    <!-- NOTICE BANNER (non-blocking) -->
+    <div class="notice-banner" id="noticeBanner">
+      <div class="notice-icon" id="noticeIcon">⏰</div>
+      <div class="notice-text">
+        <strong id="noticeTitle">Danny, seu pagamento mensal está pendente</strong>
+        <span id="noticeSub">Renove sua assinatura pra continuar com tudo funcionando.</span>
+      </div>
+      <div class="notice-actions">
+        <button class="notice-btn notice-btn-card" onclick="payWithCard()">💳 Cartão</button>
+        <button class="notice-btn notice-btn-pix" onclick="payWithPix()">⚡ PIX</button>
+        <button class="notice-close" onclick="dismissNotice()" title="Lembrar depois">✕</button>
+      </div>
+    </div>
+
     <!-- INVENTORY -->
     <section class="view-section active" id="view-inventory">
       <div class="greeting"><h2 id="greetingText">Olá, <span>Danny</span> 👋</h2><p>Seu estoque atualizado em tempo real</p></div>
@@ -396,18 +437,50 @@ tbody tr:hover .row-actions{opacity:1;}
     <section class="view-section" id="view-subscription">
       <div class="sub-hero">
         <div class="sub-hero-status" id="subHeroStatus"><span class="sd"></span><span id="subHeroStatusText">Carregando...</span></div>
-        <h2>Assinatura Estoque Danny</h2>
+        <h2>Plano Estoque Danny</h2>
         <p id="subHeroDesc">Acesso completo ao sistema de gestão de estoque na nuvem.</p>
       </div>
+
+      <div class="sub-explainer">
+        <h3>O que você tem com o plano</h3>
+        <ul>
+          <li>Cadastro ilimitado de produtos com código, preço e estoque mínimo</li>
+          <li>Controle de entradas e saídas com histórico completo</li>
+          <li>Avisos automáticos de produtos com estoque baixo ou zerado</li>
+          <li>Dados sincronizados na nuvem em tempo real (acessa de qualquer lugar)</li>
+          <li>Backup completo em JSON quando quiser</li>
+          <li>Suporte e manutenção técnica do sistema</li>
+        </ul>
+      </div>
+
       <div class="sub-grid">
-        <div class="sub-info-card"><div class="lbl">Valor mensal</div><div class="val">R$ 40,00</div><div class="sub">Cobrança automática no cartão</div></div>
-        <div class="sub-info-card"><div class="lbl">Próxima cobrança</div><div class="val" id="subNextDate">—</div><div class="sub" id="subNextRel">—</div></div>
+        <div class="sub-info-card"><div class="lbl">Valor mensal</div><div class="val">R$ 45,60</div><div class="sub">Cartão recorrente ou PIX único</div></div>
+        <div class="sub-info-card"><div class="lbl">Acesso até</div><div class="val" id="subNextDate">—</div><div class="sub" id="subNextRel">—</div></div>
         <div class="sub-info-card"><div class="lbl">Último pagamento</div><div class="val" id="subLastDate">—</div><div class="sub" id="subLastAmount">—</div></div>
       </div>
-      <div class="sub-actions">
-        <a class="sub-pay-btn" id="subPayBtn" href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=4271be478c68437a9a416418bc9d3f64" target="_blank" rel="noopener">💳 Assinar / Renovar</a>
-        <button class="btn btn-secondary" onclick="refreshSubscription()">↻ Atualizar status</button>
+
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Como você prefere pagar?</h3>
+      <div class="pay-options">
+        <button class="pay-card card" onclick="payWithCard()">
+          <div class="pay-card-icon">💳</div>
+          <span class="pay-card-tag">Recomendado</span>
+          <div class="pay-card-title">Cartão de crédito</div>
+          <div class="pay-card-sub">Cobrança automática todo mês. Cancele quando quiser direto no MercadoPago.</div>
+          <div class="pay-card-price">R$ 45,60 <small>/mês</small></div>
+        </button>
+        <button class="pay-card pix" onclick="payWithPix()">
+          <div class="pay-card-icon">⚡</div>
+          <span class="pay-card-tag">Pagamento único</span>
+          <div class="pay-card-title">PIX</div>
+          <div class="pay-card-sub">Paga uma vez e libera 30 dias de acesso. Sem cobrança automática.</div>
+          <div class="pay-card-price">R$ 45,60 <small>/30 dias</small></div>
+        </button>
       </div>
+
+      <div class="sub-actions">
+        <button class="btn btn-secondary" onclick="refreshSubscription()">↻ Já paguei — atualizar status</button>
+      </div>
+
       <div style="margin-top:32px;">
         <div class="sub-history">
           <div class="sub-history-head">📜 Histórico de pagamentos</div>
@@ -455,22 +528,6 @@ tbody tr:hover .row-actions{opacity:1;}
   </div>
 </div>
 
-<!-- PAYWALL -->
-<div class="paywall" id="paywall">
-  <div class="paywall-card" id="paywallCard">
-    <div class="paywall-icon" id="paywallIcon">⏰</div>
-    <h2 id="paywallTitle">Sua assinatura expirou</h2>
-    <p id="paywallText">Pra continuar usando o Estoque Danny, renove sua assinatura abaixo. A cobrança é automática mensal e você pode cancelar quando quiser.</p>
-    <div class="paywall-price">
-      <div class="paywall-price-val">R$ 40,00<span style="font-size:16px;color:var(--g5);font-weight:500;">/mês</span></div>
-      <div class="paywall-price-label">Sistema completo de gestão de estoque</div>
-    </div>
-    <a class="paywall-btn" href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=4271be478c68437a9a416418bc9d3f64" target="_blank" rel="noopener">💳 Assinar agora</a>
-    <button class="paywall-secondary" onclick="refreshSubscription()">Já paguei — atualizar status</button>
-    <button class="paywall-secondary" onclick="doLogout()">Sair da conta</button>
-  </div>
-</div>
-
 <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 <div class="toast-container" id="toasts"></div>
@@ -507,7 +564,7 @@ function doLogin(){
     btn.disabled=false;btn.textContent='Entrar';err.textContent='Email ou senha incorretos';err.classList.remove('show');void err.offsetWidth;err.classList.add('show');
   });
 }
-function doLogout(){if(unsubP)unsubP();if(unsubA)unsubA();if(unsubM)unsubM();if(unsubS)unsubS();if(unsubPH)unsubPH();subscription=null;paymentHistory=[];hidePaywall();auth.signOut();}
+function doLogout(){if(unsubP)unsubP();if(unsubA)unsubA();if(unsubM)unsubM();if(unsubS)unsubS();if(unsubPH)unsubPH();subscription=null;paymentHistory=[];hideNotice();sessionStorage.removeItem('noticeDismissed');auth.signOut();}
 function showLogin(){document.getElementById('loginScreen').classList.remove('hidden','hiding');document.getElementById('loginScreen').style.display='flex';document.getElementById('app').classList.remove('active');document.getElementById('loadingScreen').style.display='none';}
 function showApp(){
   var ls=document.getElementById('loginScreen');ls.classList.add('hiding');
@@ -550,46 +607,54 @@ function startListeners(){
   }
 }
 
-// ───── SUBSCRIPTION + PAYWALL ─────
+// ───── SUBSCRIPTION NOTICE (non-blocking banner) ─────
 function checkAccess(){
   var u=auth.currentUser;
   if(!u)return;
-  if(isAdminEmail(u.email)){hidePaywall();return;}
-  if(isSubActive(subscription)){hidePaywall();return;}
+  var badge=document.getElementById('subBadge');
 
-  // Block: show paywall
-  showPaywall(subscription);
-  // Show warning badge
-  var b=document.getElementById('subBadge');b.classList.remove('hide');
+  if(isAdminEmail(u.email)){hideNotice();badge.classList.add('hide');return;}
+  if(isSubActive(subscription)){hideNotice();badge.classList.add('hide');return;}
+
+  // Sub expired/missing/overdue — show notice (NOT blocking)
+  badge.classList.remove('hide');
+  if(sessionStorage.getItem('noticeDismissed')==='1')return;
+  showNotice(subscription);
 }
 
-function showPaywall(sub){
-  var pw=document.getElementById('paywall');
-  var card=document.getElementById('paywallCard');
-  var icon=document.getElementById('paywallIcon');
-  var title=document.getElementById('paywallTitle');
-  var text=document.getElementById('paywallText');
+function showNotice(sub){
+  var banner=document.getElementById('noticeBanner');
+  var icon=document.getElementById('noticeIcon');
+  var title=document.getElementById('noticeTitle');
+  var subEl=document.getElementById('noticeSub');
+
+  banner.classList.remove('warn','danger','info');
 
   if(!sub){
-    icon.textContent='💳';title.textContent='Ative sua assinatura';
-    text.textContent='Esse sistema é uma assinatura mensal. Cadastre seu cartão pra começar a usar — cobrança automática, cancele quando quiser.';
-    card.classList.remove('expired');
+    icon.textContent='💳';banner.classList.add('info');
+    title.textContent='Danny, ative seu plano mensal';
+    subEl.textContent='Mantenha seu acesso ao Estoque Danny — escolha cartão recorrente ou PIX.';
   }else if(sub.status==='overdue'){
-    icon.textContent='⚠️';title.textContent='Pagamento não autorizado';
-    text.textContent='O último pagamento falhou. Atualize seu método de pagamento ou tente assinar novamente.';
-    card.classList.add('expired');
-  }else if(sub.status==='cancelled'||sub.status==='paused'){
-    icon.textContent='⏸️';title.textContent='Assinatura '+(sub.status==='cancelled'?'cancelada':'pausada');
-    text.textContent='Reative sua assinatura abaixo pra voltar a usar o sistema.';
-    card.classList.add('expired');
+    icon.textContent='⚠️';banner.classList.add('danger');
+    title.textContent='Danny, pagamento não autorizado';
+    subEl.textContent='O último pagamento falhou. Atualize sua forma de pagamento.';
+  }else if(sub.status==='cancelled'){
+    icon.textContent='⏸️';banner.classList.add('warn');
+    title.textContent='Danny, sua assinatura foi cancelada';
+    subEl.textContent='Reative pra continuar usando o sistema.';
+  }else if(sub.status==='paused'){
+    icon.textContent='⏸️';banner.classList.add('warn');
+    title.textContent='Danny, sua assinatura está pausada';
+    subEl.textContent='Reative pra continuar usando o sistema.';
   }else{
-    icon.textContent='⏰';title.textContent='Sua assinatura expirou';
-    text.textContent='Pra continuar usando o Estoque Danny, renove sua assinatura abaixo.';
-    card.classList.add('expired');
+    icon.textContent='⏰';banner.classList.add('warn');
+    title.textContent='Danny, seu pagamento mensal está pendente';
+    subEl.textContent='Renove sua assinatura pra continuar com tudo funcionando.';
   }
-  pw.classList.add('active');
+  banner.classList.add('active');
 }
-function hidePaywall(){document.getElementById('paywall').classList.remove('active');var b=document.getElementById('subBadge');b.classList.add('hide');}
+function hideNotice(){document.getElementById('noticeBanner').classList.remove('active');}
+function dismissNotice(){hideNotice();sessionStorage.setItem('noticeDismissed','1');toast('Aviso ocultado nesta sessão','ℹ️');}
 
 function renderSubscription(){
   var statusEl=document.getElementById('subHeroStatus');
@@ -653,6 +718,26 @@ function refreshSubscription(){
       else{toast('Status atualizado','ℹ️');}
     })
     .catch(function(e){console.error(e);toast('Erro ao atualizar','❌');});
+}
+
+function payWithCard(){
+  window.open(PREAPPROVAL_URL,'_blank','noopener');
+}
+
+function payWithPix(){
+  var u=auth.currentUser;if(!u)return toast('Faça login primeiro','⚠️');
+  toast('Gerando PIX...','⚡');
+  fetch('/api/mp-create-pix',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:u.email})
+  })
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(j.initPoint){window.open(j.initPoint,'_blank','noopener');}
+      else{toast('Erro ao gerar PIX','❌');console.error(j);}
+    })
+    .catch(function(e){console.error(e);toast('Erro de rede','❌');});
 }
 
 function getStatus(p){return p.qty===0?'out':p.qty<=p.min?'low':'ok';}

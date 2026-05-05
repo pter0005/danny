@@ -57,6 +57,44 @@ async function mpFetch(path) {
   return res.json();
 }
 
+// ───── Telegram notifications ─────
+async function notifyTelegram(text) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) {
+    console.log('Telegram not configured, skipping notify');
+    return { skipped: 'no-config' };
+  }
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: 'Markdown',
+        disable_web_page_preview: true
+      })
+    });
+    if (!res.ok) console.error('Telegram error', await res.text());
+    return { ok: res.ok };
+  } catch (e) {
+    console.error('Telegram fetch failed', e.message);
+    return { error: e.message };
+  }
+}
+
+function fmtBRL(v) {
+  if (v == null) return '—';
+  return 'R$ ' + Number(v).toFixed(2).replace('.', ',');
+}
+
+function fmtDate(d) {
+  if (!d) return '—';
+  const x = d instanceof Date ? d : new Date(d);
+  return x.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
 function emailToDocId(email) {
   return email.toLowerCase().trim();
 }
@@ -98,6 +136,21 @@ async function handlePreapproval(preapprovalId) {
   };
 
   await db.collection('subscriptions').doc(emailToDocId(email)).set(update, { merge: true });
+
+  // Notify Telegram on important state changes
+  if (status === 'active') {
+    await notifyTelegram(
+      `🆕 *Nova assinatura ativa*\n` +
+      `👤 ${email}\n` +
+      `💰 ${fmtBRL(update.amount)}/mês\n` +
+      `📅 Próxima cobrança: ${fmtDate(p.next_payment_date)}`
+    );
+  } else if (status === 'cancelled') {
+    await notifyTelegram(`🚫 *Assinatura cancelada*\n👤 ${email}`);
+  } else if (status === 'paused') {
+    await notifyTelegram(`⏸️ *Assinatura pausada*\n👤 ${email}`);
+  }
+
   return { email, status, nextPaymentAt: p.next_payment_date };
 }
 
@@ -147,14 +200,82 @@ async function handleAuthorizedPayment(paymentId) {
   }
 
   await db.collection('subscriptions').doc(emailToDocId(email)).set(update, { merge: true });
+
+  // Notify Telegram
+  if (paid) {
+    await notifyTelegram(
+      `💰 *Pagamento recebido (cartão)*\n` +
+      `👤 ${email}\n` +
+      `💵 ${fmtBRL(update.lastPaymentAmount)}\n` +
+      `📅 Próxima cobrança: ${fmtDate(p.next_payment_date)}`
+    );
+  } else if (update.status === 'overdue') {
+    await notifyTelegram(
+      `⚠️ *Pagamento NÃO autorizado*\n` +
+      `👤 ${email}\n` +
+      `❌ Motivo: ${update.lastFailReason || 'desconhecido'}\n` +
+      `Acesso ao app pode ser interrompido — verifique no MP.`
+    );
+  }
+
   return { email, paid, status: update.status };
 }
 
 async function handlePayment(paymentId) {
   const p = await mpFetch(`/v1/payments/${paymentId}`);
-  // Standalone payments (not subscription) — log and ignore
-  if (!p.metadata?.preapproval_id && !p.point_of_interaction) {
-    return { skipped: 'standalone-payment' };
+
+  // Detect one-time PIX payment via external_reference (format: "pix:email@x.com")
+  const ref = p.external_reference || '';
+  if (ref.startsWith('pix:') && p.status === 'approved') {
+    const email = ref.slice(4).toLowerCase().trim();
+    if (!email) return { skipped: 'pix-no-email' };
+
+    // Grant +30 days from the latest of (now, current activeUntil)
+    const docRef = db.collection('subscriptions').doc(emailToDocId(email));
+    const snap = await docRef.get();
+    const current = snap.exists ? snap.data() : null;
+    const currentUntil = current?.activeUntil?.toDate
+      ? current.activeUntil.toDate()
+      : (current?.activeUntil ? new Date(current.activeUntil) : null);
+    const start = currentUntil && currentUntil.getTime() > Date.now() ? currentUntil : new Date();
+    const newUntil = new Date(start.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+    await docRef.set({
+      email,
+      status: 'active',
+      paymentKind: 'pix',
+      activeUntil: admin.firestore.Timestamp.fromDate(newUntil),
+      lastPaymentAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastPaymentAmount: p.transaction_amount || null,
+      lastPaymentId: paymentId,
+      lastPaymentMethod: 'pix',
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    await db.collection('paymentHistory').add({
+      email,
+      paymentId,
+      amount: p.transaction_amount || null,
+      status: 'approved',
+      method: 'pix',
+      kind: 'pix-30d',
+      grantedUntil: admin.firestore.Timestamp.fromDate(newUntil),
+      paidAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    await notifyTelegram(
+      `⚡ *PIX recebido!*\n` +
+      `👤 ${email}\n` +
+      `💵 ${fmtBRL(p.transaction_amount)}\n` +
+      `🔓 Acesso liberado até ${fmtDate(newUntil)}`
+    );
+
+    return { kind: 'pix', email, grantedUntil: newUntil.toISOString() };
+  }
+
+  // Standalone non-subscription payments — log and skip
+  if (!p.metadata?.preapproval_id) {
+    return { skipped: 'standalone-payment', status: p.status };
   }
   return { logged: true, status: p.status };
 }
