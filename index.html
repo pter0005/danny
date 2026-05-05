@@ -237,6 +237,50 @@ tbody tr:hover .row-actions{opacity:1;}
 @keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(0.95);}to{opacity:1;transform:none;}}
 @keyframes toastOut{to{opacity:0;transform:translateY(12px) scale(0.95);}}
 
+/* SUBSCRIPTION */
+.sub-hero{background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 100%);color:#fff;border-radius:20px;padding:32px;margin-bottom:24px;position:relative;overflow:hidden;}
+.sub-hero::before{content:'';position:absolute;top:-50%;right:-20%;width:400px;height:400px;background:radial-gradient(circle,rgba(0,200,83,0.18) 0%,transparent 70%);pointer-events:none;}
+.sub-hero-status{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:50px;font-size:12px;font-weight:600;margin-bottom:14px;background:rgba(255,255,255,0.1);}
+.sub-hero-status .sd{width:8px;height:8px;border-radius:50%;}
+.sub-hero-status.active{background:rgba(0,200,83,0.18);color:#00e676;}
+.sub-hero-status.active .sd{background:#00e676;animation:pulse 2s infinite;}
+.sub-hero-status.overdue{background:rgba(255,23,68,0.18);color:#ff5273;}
+.sub-hero-status.overdue .sd{background:#ff1744;animation:pulse 1s infinite;}
+.sub-hero-status.pending{background:rgba(255,145,0,0.18);color:#ffb74d;}
+.sub-hero-status.pending .sd{background:#ff9100;}
+.sub-hero h2{font-size:30px;font-weight:700;letter-spacing:-0.5px;margin-bottom:8px;position:relative;}
+.sub-hero p{color:rgba(255,255,255,0.65);font-size:14px;position:relative;}
+.sub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+.sub-info-card{background:var(--white);border:1px solid var(--g2);border-radius:var(--r);padding:20px 24px;}
+.sub-info-card .lbl{font-size:12px;color:var(--g4);font-weight:500;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.sub-info-card .val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;}
+.sub-info-card .sub{font-size:12px;color:var(--g5);margin-top:4px;}
+.sub-actions{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
+.sub-pay-btn{padding:14px 28px;background:var(--green);color:var(--black);border:none;border-radius:var(--rs);font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none;}
+.sub-pay-btn:hover{background:#00b348;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,200,83,0.3);}
+.sub-history{background:var(--white);border:1px solid var(--g2);border-radius:var(--r);overflow:hidden;}
+.sub-history-head{padding:16px 24px;border-bottom:1px solid var(--g2);background:var(--g1);font-size:13px;font-weight:600;color:var(--g6);text-transform:uppercase;letter-spacing:1.2px;}
+.sub-history-item{padding:14px 24px;border-bottom:1px solid var(--g1);display:flex;align-items:center;justify-content:space-between;}
+.sub-history-item:last-child{border-bottom:none;}
+.sub-history-date{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--g5);}
+.sub-history-amount{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--green);}
+
+/* PAYWALL */
+.paywall{position:fixed;inset:0;z-index:9997;background:rgba(10,10,10,0.7);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;padding:20px;}
+.paywall.active{display:flex;}
+.paywall-card{background:var(--white);border-radius:24px;width:480px;max-width:100%;padding:40px;box-shadow:var(--shadow-xl);animation:modalIn 0.4s cubic-bezier(0.16,1,0.3,1);text-align:center;}
+.paywall-icon{width:72px;height:72px;background:var(--orange-bg);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:36px;}
+.paywall-card.expired .paywall-icon{background:var(--red-bg);}
+.paywall-card h2{font-size:24px;font-weight:800;margin-bottom:10px;letter-spacing:-0.5px;}
+.paywall-card p{color:var(--g5);font-size:14px;margin-bottom:24px;line-height:1.55;}
+.paywall-price{background:var(--g1);border-radius:var(--rs);padding:18px;margin-bottom:24px;}
+.paywall-price-val{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:800;}
+.paywall-price-label{font-size:13px;color:var(--g5);font-weight:500;}
+.paywall-btn{width:100%;padding:16px;background:var(--green);color:var(--black);border:none;border-radius:var(--rs);font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;}
+.paywall-btn:hover{background:#00b348;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,200,83,0.3);}
+.paywall-secondary{background:none;border:none;color:var(--g5);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;padding:8px;text-decoration:underline;}
+.paywall-secondary:hover{color:var(--black);}
+
 /* MOBILE */
 .mobile-toggle{display:none;position:fixed;bottom:20px;left:20px;z-index:401;width:50px;height:50px;border-radius:50%;background:var(--black);color:white;border:none;font-size:20px;cursor:pointer;box-shadow:var(--shadow-l);align-items:center;justify-content:center;}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:399;}
@@ -280,6 +324,7 @@ tbody tr:hover .row-actions{opacity:1;}
       <button class="nav-item" onclick="switchView('movements',this)"><span class="icon">📊</span> Entradas/Saídas</button>
       <button class="nav-item" onclick="switchView('alerts',this)"><span class="icon">🔔</span> Avisos <span class="nav-badge warn hide" id="alertCount">0</span></button>
       <button class="nav-item" onclick="switchView('activity',this)"><span class="icon">📋</span> Atividade <span class="nav-badge hide" id="activityCount">0</span></button>
+      <button class="nav-item" onclick="switchView('subscription',this)"><span class="icon">💳</span> Assinatura <span class="nav-badge warn hide" id="subBadge">!</span></button>
     </nav>
     <div class="sidebar-footer">
       <p>Dados salvos na nuvem</p>
@@ -346,6 +391,30 @@ tbody tr:hover .row-actions{opacity:1;}
       </div>
       <div class="activity-list" id="activityList"></div>
     </section>
+
+    <!-- SUBSCRIPTION -->
+    <section class="view-section" id="view-subscription">
+      <div class="sub-hero">
+        <div class="sub-hero-status" id="subHeroStatus"><span class="sd"></span><span id="subHeroStatusText">Carregando...</span></div>
+        <h2>Assinatura Estoque Danny</h2>
+        <p id="subHeroDesc">Acesso completo ao sistema de gestão de estoque na nuvem.</p>
+      </div>
+      <div class="sub-grid">
+        <div class="sub-info-card"><div class="lbl">Valor mensal</div><div class="val">R$ 40,00</div><div class="sub">Cobrança automática no cartão</div></div>
+        <div class="sub-info-card"><div class="lbl">Próxima cobrança</div><div class="val" id="subNextDate">—</div><div class="sub" id="subNextRel">—</div></div>
+        <div class="sub-info-card"><div class="lbl">Último pagamento</div><div class="val" id="subLastDate">—</div><div class="sub" id="subLastAmount">—</div></div>
+      </div>
+      <div class="sub-actions">
+        <a class="sub-pay-btn" id="subPayBtn" href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=4271be478c68437a9a416418bc9d3f64" target="_blank" rel="noopener">💳 Assinar / Renovar</a>
+        <button class="btn btn-secondary" onclick="refreshSubscription()">↻ Atualizar status</button>
+      </div>
+      <div style="margin-top:32px;">
+        <div class="sub-history">
+          <div class="sub-history-head">📜 Histórico de pagamentos</div>
+          <div id="subHistoryList"><div style="padding:32px 24px;text-align:center;color:var(--g4);font-size:14px;">Nenhum pagamento registrado ainda</div></div>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -386,6 +455,22 @@ tbody tr:hover .row-actions{opacity:1;}
   </div>
 </div>
 
+<!-- PAYWALL -->
+<div class="paywall" id="paywall">
+  <div class="paywall-card" id="paywallCard">
+    <div class="paywall-icon" id="paywallIcon">⏰</div>
+    <h2 id="paywallTitle">Sua assinatura expirou</h2>
+    <p id="paywallText">Pra continuar usando o Estoque Danny, renove sua assinatura abaixo. A cobrança é automática mensal e você pode cancelar quando quiser.</p>
+    <div class="paywall-price">
+      <div class="paywall-price-val">R$ 40,00<span style="font-size:16px;color:var(--g5);font-weight:500;">/mês</span></div>
+      <div class="paywall-price-label">Sistema completo de gestão de estoque</div>
+    </div>
+    <a class="paywall-btn" href="https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=4271be478c68437a9a416418bc9d3f64" target="_blank" rel="noopener">💳 Assinar agora</a>
+    <button class="paywall-secondary" onclick="refreshSubscription()">Já paguei — atualizar status</button>
+    <button class="paywall-secondary" onclick="doLogout()">Sair da conta</button>
+  </div>
+</div>
+
 <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 <div class="toast-container" id="toasts"></div>
@@ -395,7 +480,21 @@ firebase.initializeApp({apiKey:"AIzaSyCgQoZZPvC5EqfjtXhVNyBGgWTzqQ6rfO0",authDom
 
 var auth=firebase.auth(),db=firebase.firestore();
 var productsRef=db.collection('products'),activityRef=db.collection('activity'),movRef=db.collection('movements');
-var products=[],activity=[],movements=[],filter='all',unsubP=null,unsubA=null,unsubM=null;
+var subsRef=db.collection('subscriptions'),paymentHistoryRef=db.collection('paymentHistory');
+var products=[],activity=[],movements=[],filter='all';
+var unsubP=null,unsubA=null,unsubM=null,unsubS=null,unsubPH=null;
+var subscription=null,paymentHistory=[];
+
+// Admins bypass paywall (devs/owners)
+var ADMIN_EMAILS=['contatomycupid@gmail.com'];
+var PREAPPROVAL_URL='https://www.mercadopago.com.br/subscriptions/checkout?preapproval_plan_id=4271be478c68437a9a416418bc9d3f64';
+
+function isAdminEmail(e){return ADMIN_EMAILS.indexOf((e||'').toLowerCase())>=0;}
+function emailKey(e){return (e||'').toLowerCase().trim();}
+function tsToDate(t){if(!t)return null;if(t.toDate)return t.toDate();if(t.seconds)return new Date(t.seconds*1000);if(typeof t==='number')return new Date(t);return new Date(t);}
+function isSubActive(s){if(!s)return false;if(s.status!=='active')return false;var u=tsToDate(s.activeUntil);if(!u)return false;return u.getTime()>Date.now();}
+function fmtDate(d){if(!d)return '—';return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});}
+function fmtRel(d){if(!d)return '—';var diff=d.getTime()-Date.now(),abs=Math.abs(diff),days=Math.floor(abs/86400000);if(days===0)return diff>=0?'hoje':'hoje';if(days===1)return diff>0?'amanhã':'ontem';return diff>0?'em '+days+' dias':'há '+days+' dias';}
 
 auth.onAuthStateChanged(function(u){if(u){showApp();}else{showLogin();}});
 
@@ -408,7 +507,7 @@ function doLogin(){
     btn.disabled=false;btn.textContent='Entrar';err.textContent='Email ou senha incorretos';err.classList.remove('show');void err.offsetWidth;err.classList.add('show');
   });
 }
-function doLogout(){if(unsubP)unsubP();if(unsubA)unsubA();if(unsubM)unsubM();auth.signOut();}
+function doLogout(){if(unsubP)unsubP();if(unsubA)unsubA();if(unsubM)unsubM();if(unsubS)unsubS();if(unsubPH)unsubPH();subscription=null;paymentHistory=[];hidePaywall();auth.signOut();}
 function showLogin(){document.getElementById('loginScreen').classList.remove('hidden','hiding');document.getElementById('loginScreen').style.display='flex';document.getElementById('app').classList.remove('active');document.getElementById('loadingScreen').style.display='none';}
 function showApp(){
   var ls=document.getElementById('loginScreen');ls.classList.add('hiding');
@@ -435,6 +534,125 @@ function startListeners(){
   unsubM=movRef.orderBy('time','desc').limit(100).onSnapshot(function(s){
     movements=s.docs.map(function(d){return Object.assign({id:d.id},d.data());});renderMov();
   });
+
+  // Subscription listener (per-user doc keyed by lowercase email)
+  var u=auth.currentUser;
+  if(u&&u.email){
+    var key=emailKey(u.email);
+    unsubS=subsRef.doc(key).onSnapshot(function(snap){
+      subscription=snap.exists?Object.assign({_id:snap.id},snap.data()):null;
+      renderSubscription();checkAccess();
+    },function(e){console.error('sub listener',e);});
+    unsubPH=paymentHistoryRef.where('email','==',key).orderBy('paidAt','desc').limit(12).onSnapshot(function(s){
+      paymentHistory=s.docs.map(function(d){return Object.assign({id:d.id},d.data());});
+      renderSubscription();
+    },function(e){console.error('history listener',e);});
+  }
+}
+
+// ───── SUBSCRIPTION + PAYWALL ─────
+function checkAccess(){
+  var u=auth.currentUser;
+  if(!u)return;
+  if(isAdminEmail(u.email)){hidePaywall();return;}
+  if(isSubActive(subscription)){hidePaywall();return;}
+
+  // Block: show paywall
+  showPaywall(subscription);
+  // Show warning badge
+  var b=document.getElementById('subBadge');b.classList.remove('hide');
+}
+
+function showPaywall(sub){
+  var pw=document.getElementById('paywall');
+  var card=document.getElementById('paywallCard');
+  var icon=document.getElementById('paywallIcon');
+  var title=document.getElementById('paywallTitle');
+  var text=document.getElementById('paywallText');
+
+  if(!sub){
+    icon.textContent='💳';title.textContent='Ative sua assinatura';
+    text.textContent='Esse sistema é uma assinatura mensal. Cadastre seu cartão pra começar a usar — cobrança automática, cancele quando quiser.';
+    card.classList.remove('expired');
+  }else if(sub.status==='overdue'){
+    icon.textContent='⚠️';title.textContent='Pagamento não autorizado';
+    text.textContent='O último pagamento falhou. Atualize seu método de pagamento ou tente assinar novamente.';
+    card.classList.add('expired');
+  }else if(sub.status==='cancelled'||sub.status==='paused'){
+    icon.textContent='⏸️';title.textContent='Assinatura '+(sub.status==='cancelled'?'cancelada':'pausada');
+    text.textContent='Reative sua assinatura abaixo pra voltar a usar o sistema.';
+    card.classList.add('expired');
+  }else{
+    icon.textContent='⏰';title.textContent='Sua assinatura expirou';
+    text.textContent='Pra continuar usando o Estoque Danny, renove sua assinatura abaixo.';
+    card.classList.add('expired');
+  }
+  pw.classList.add('active');
+}
+function hidePaywall(){document.getElementById('paywall').classList.remove('active');var b=document.getElementById('subBadge');b.classList.add('hide');}
+
+function renderSubscription(){
+  var statusEl=document.getElementById('subHeroStatus');
+  var statusText=document.getElementById('subHeroStatusText');
+  var desc=document.getElementById('subHeroDesc');
+  var nextDate=document.getElementById('subNextDate');
+  var nextRel=document.getElementById('subNextRel');
+  var lastDate=document.getElementById('subLastDate');
+  var lastAmount=document.getElementById('subLastAmount');
+  var u=auth.currentUser;
+
+  // Hero status
+  statusEl.classList.remove('active','overdue','pending');
+  if(isAdminEmail(u&&u.email)){
+    statusEl.classList.add('active');statusText.textContent='Acesso administrador';
+    desc.textContent='Você tem acesso de admin — assinatura não é cobrada da sua conta.';
+  }else if(isSubActive(subscription)){
+    statusEl.classList.add('active');statusText.textContent='Assinatura ativa';
+    desc.textContent='Tudo certo! Sua assinatura está em dia e o sistema renova automático.';
+  }else if(subscription&&subscription.status==='overdue'){
+    statusEl.classList.add('overdue');statusText.textContent='Pagamento pendente';
+    desc.textContent='O último pagamento não foi autorizado. Atualize abaixo.';
+  }else if(subscription){
+    statusEl.classList.add('overdue');statusText.textContent=(subscription.status||'inativa').toString().toUpperCase();
+    desc.textContent='Sua assinatura precisa de atenção.';
+  }else{
+    statusEl.classList.add('pending');statusText.textContent='Sem assinatura';
+    desc.textContent='Cadastre seu cartão pra começar a usar o sistema.';
+  }
+
+  // Next + last dates
+  var nd=tsToDate(subscription&&subscription.nextPaymentAt);
+  var au=tsToDate(subscription&&subscription.activeUntil);
+  var ref=nd||au;
+  nextDate.textContent=fmtDate(ref);
+  nextRel.textContent=ref?fmtRel(ref):'—';
+
+  var lp=tsToDate(subscription&&subscription.lastPaymentAt);
+  lastDate.textContent=fmtDate(lp);
+  lastAmount.textContent=subscription&&subscription.lastPaymentAmount?'R$ '+Number(subscription.lastPaymentAmount).toFixed(2):'—';
+
+  // History
+  var hl=document.getElementById('subHistoryList');
+  if(!paymentHistory.length){
+    hl.innerHTML='<div style="padding:32px 24px;text-align:center;color:var(--g4);font-size:14px;">Nenhum pagamento registrado ainda</div>';
+  }else{
+    hl.innerHTML=paymentHistory.map(function(p){
+      var d=tsToDate(p.paidAt);
+      return '<div class="sub-history-item"><span class="sub-history-date">'+fmtDate(d)+'</span><span class="sub-history-amount">+ R$ '+Number(p.amount||0).toFixed(2)+'</span></div>';
+    }).join('');
+  }
+}
+
+function refreshSubscription(){
+  var u=auth.currentUser;if(!u)return;
+  toast('Atualizando status...','↻');
+  fetch('/api/mp-status?email='+encodeURIComponent(u.email)+'&refresh=1')
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(j.active){toast('Assinatura ativa!','✅');}
+      else{toast('Status atualizado','ℹ️');}
+    })
+    .catch(function(e){console.error(e);toast('Erro ao atualizar','❌');});
 }
 
 function getStatus(p){return p.qty===0?'out':p.qty<=p.min?'low':'ok';}
@@ -556,7 +774,7 @@ function renderAct(){
 }
 function clearActivity(){var batch=db.batch();activity.forEach(function(a){batch.delete(activityRef.doc(a.id));});batch.commit().then(function(){toast('Limpo','🗑️');});}
 
-function switchView(v,el){document.querySelectorAll('.view-section').forEach(function(s){s.classList.remove('active');});document.getElementById('view-'+v).classList.add('active');document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});el.classList.add('active');if(v==='activity')renderAct();if(v==='alerts')renderAlerts();if(v==='movements')renderMov();document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');}
+function switchView(v,el){document.querySelectorAll('.view-section').forEach(function(s){s.classList.remove('active');});document.getElementById('view-'+v).classList.add('active');document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});el.classList.add('active');if(v==='activity')renderAct();if(v==='alerts')renderAlerts();if(v==='movements')renderMov();if(v==='subscription')renderSubscription();document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('active');}
 function toast(msg,icon){icon=icon||'';var c=document.getElementById('toasts'),el=document.createElement('div');el.className='toast';el.innerHTML=icon+' '+msg;c.appendChild(el);setTimeout(function(){el.classList.add('out');setTimeout(function(){el.remove();},300);},2800);}
 

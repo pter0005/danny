@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backup — Estoque Danny</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:#f6f6f6;color:#0a0a0a;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{width:520px;max-width:100%;background:#fff;border:1px solid #e5e5e5;border-radius:24px;padding:40px;box-shadow:0 16px 48px rgba(0,0,0,0.08);}
+.head{text-align:center;margin-bottom:32px;}
+.mark{width:56px;height:56px;background:linear-gradient(135deg,#00c853,#2979ff);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800;color:#0a0a0a;}
+h1{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+.sub{font-size:13px;color:#9a9a9a;margin-top:6px;}
+.warn{background:#fff3e0;border:1px solid #ffd093;border-radius:12px;padding:14px 16px;font-size:13px;color:#7a4a00;margin-bottom:24px;line-height:1.5;}
+.warn strong{font-weight:700;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;font-weight:600;color:#3a3a3a;margin-bottom:6px;}
+.field input{width:100%;padding:12px 16px;background:#f6f6f6;border:1.5px solid #e5e5e5;border-radius:10px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:all 0.2s;}
+.field input:focus{border-color:#0a0a0a;box-shadow:0 0 0 3px rgba(0,0,0,0.05);}
+.btn{width:100%;padding:14px;background:#0a0a0a;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all 0.2s;}
+.btn:hover{background:#3a3a3a;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.12);}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-green{background:#00c853;color:#0a0a0a;}
+.btn-green:hover{background:#00b348;}
+.msg{text-align:center;margin-top:16px;font-size:13px;font-weight:500;min-height:18px;}
+.msg.err{color:#ff1744;}
+.msg.ok{color:#00873a;}
+.stage{display:none;}
+.stage.active{display:block;}
+.stats{background:#f6f6f6;border-radius:12px;padding:18px;margin-bottom:18px;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px;border-bottom:1px solid #e5e5e5;}
+.stat-row:last-child{border-bottom:none;}
+.stat-row strong{font-family:'JetBrains Mono',monospace;font-weight:700;}
+.spinner{width:18px;height:18px;border:2px solid #e5e5e5;border-top-color:#00c853;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.foot{text-align:center;margin-top:18px;font-size:12px;color:#9a9a9a;}
+.foot a{color:#2979ff;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <div class="mark">ED</div>
+    <h1>Backup do Estoque</h1>
+    <p class="sub">Baixa um JSON com todos os dados atuais do Firestore</p>
+  </div>
+
+  <div class="warn">
+    <strong>Sobre este backup:</strong> Não altera nem apaga nada no banco. Só lê e salva um arquivo no seu PC. Guarde o JSON em local seguro (Drive, email).
+  </div>
+
+  <!-- Stage 1: Login -->
+  <div class="stage active" id="stage-login">
+    <div class="field"><label>Email</label><input type="email" id="email" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="field"><label>Senha</label><input type="password" id="pass" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="btn" id="btnLogin" onclick="doLogin()">Entrar</button>
+    <div class="msg err" id="loginMsg"></div>
+  </div>
+
+  <!-- Stage 2: Backup -->
+  <div class="stage" id="stage-backup">
+    <div class="stats" id="counts">
+      <div class="stat-row"><span>Produtos</span><strong id="cProducts">—</strong></div>
+      <div class="stat-row"><span>Movimentações</span><strong id="cMovements">—</strong></div>
+      <div class="stat-row"><span>Atividade</span><strong id="cActivity">—</strong></div>
+    </div>
+    <button class="btn btn-green" id="btnBackup" onclick="doBackup()">⬇ Baixar backup completo</button>
+    <div class="msg" id="backupMsg"></div>
+  </div>
+
+  <p class="foot"><a href="index.html">← Voltar ao app</a></p>
+</div>
+
+<script>
+firebase.initializeApp({apiKey:"AIzaSyCgQoZZPvC5EqfjtXhVNyBGgWTzqQ6rfO0",authDomain:"danny-f856e.firebaseapp.com",projectId:"danny-f856e",storageBucket:"danny-f856e.firebasestorage.app",messagingSenderId:"352641765556",appId:"1:352641765556:web:1f36379b78344c615347e1"});
+
+var auth=firebase.auth(),db=firebase.firestore();
+
+auth.onAuthStateChanged(function(u){
+  if(u){showStage('stage-backup');loadCounts();}
+  else{showStage('stage-login');}
+});
+
+function showStage(id){
+  document.querySelectorAll('.stage').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+}
+
+function doLogin(){
+  var e=document.getElementById('email').value.trim();
+  var p=document.getElementById('pass').value;
+  var btn=document.getElementById('btnLogin');
+  var msg=document.getElementById('loginMsg');
+  if(!e||!p){msg.textContent='Preencha email e senha';return;}
+  btn.disabled=true;btn.textContent='Entrando...';msg.textContent='';
+  auth.signInWithEmailAndPassword(e,p).catch(function(err){
+    btn.disabled=false;btn.textContent='Entrar';
+    msg.textContent='Email ou senha incorretos';
+  });
+}
+
+function loadCounts(){
+  ['products','movements','activity'].forEach(function(col){
+    db.collection(col).get().then(function(s){
+      var id='c'+col.charAt(0).toUpperCase()+col.slice(1);
+      document.getElementById(id).textContent=s.size;
+    });
+  });
+}
+
+function doBackup(){
+  var btn=document.getElementById('btnBackup');
+  var msg=document.getElementById('backupMsg');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Coletando dados...';
+  msg.textContent='';msg.className='msg';
+
+  Promise.all([
+    db.collection('products').get(),
+    db.collection('movements').get(),
+    db.collection('activity').get()
+  ]).then(function(snaps){
+    var dump={
+      _meta:{
+        project:'danny-f856e',
+        exportedAt:new Date().toISOString(),
+        exportedBy:auth.currentUser.email,
+        counts:{products:snaps[0].size,movements:snaps[1].size,activity:snaps[2].size}
+      },
+      products:snaps[0].docs.map(function(d){return Object.assign({_id:d.id},d.data());}),
+      movements:snaps[1].docs.map(function(d){return Object.assign({_id:d.id},d.data());}),
+      activity:snaps[2].docs.map(function(d){return Object.assign({_id:d.id},d.data());})
+    };
+
+    var blob=new Blob([JSON.stringify(dump,null,2)],{type:'application/json'});
+    var a=document.createElement('a');
+    var ts=new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+    a.href=URL.createObjectURL(blob);
+    a.download='estoque-danny-backup-'+ts+'.json';
+    a.click();
+
+    btn.disabled=false;btn.innerHTML='⬇ Baixar backup completo';
+    msg.className='msg ok';
+    msg.textContent='✓ Backup gerado: '+(snaps[0].size+snaps[1].size+snaps[2].size)+' documentos';
+  }).catch(function(err){
+    btn.disabled=false;btn.innerHTML='⬇ Baixar backup completo';
+    msg.className='msg err';
+    msg.textContent='Erro: '+err.message;
+    console.error(err);
+  });
+}
+
+document.getElementById('pass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+document.getElementById('email').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('pass').focus();});
+</script>
+</body>
+</html>

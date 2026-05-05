@@ -1,0 +1,12 @@
+{
+  "name": "danny-estoque",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Estoque Danny - inventory + MercadoPago subscription",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}
