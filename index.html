@@ -385,10 +385,10 @@ tbody tr:hover .row-actions{opacity:1;}
   <main class="main">
     <!-- NOTICE BANNER (some quando ela pagar, automático) -->
     <div class="notice-banner" id="noticeBanner">
-      <div class="notice-icon" id="noticeIcon">🔔</div>
+      <div class="notice-icon">🔔</div>
       <div class="notice-text">
-        <strong id="noticeTitle">Avisar Danny: pagamento mensal vence dia 12</strong>
-        <span id="noticeSub">Repasse o aviso pra ela renovar antes do vencimento.</span>
+        <strong>Data de pagamento se aproximando</strong>
+        <span>Verificar em "Assinatura"</span>
       </div>
     </div>
 
@@ -648,32 +648,10 @@ function checkAccess(){
   showNotice(subscription);
 }
 
-function showNotice(sub){
+function showNotice(){
   var banner=document.getElementById('noticeBanner');
-  var icon=document.getElementById('noticeIcon');
-  var title=document.getElementById('noticeTitle');
-  var subEl=document.getElementById('noticeSub');
-
-  banner.classList.remove('warn','danger','info');
-
-  if(!sub){
-    icon.textContent='🔔';banner.classList.add('info');
-    title.textContent='Avisar Danny: ainda não tem plano ativo';
-    subEl.textContent='Repasse pra ela ativar a mensalidade quando puder.';
-  }else if(sub.status==='overdue'){
-    icon.textContent='⚠️';banner.classList.add('danger');
-    title.textContent='Avisar Danny: pagamento não autorizado';
-    subEl.textContent='O último pagamento falhou — repasse pra ela tentar de novo.';
-  }else if(sub.status==='cancelled'||sub.status==='paused'){
-    icon.textContent='⏸️';banner.classList.add('warn');
-    title.textContent='Avisar Danny: assinatura '+(sub.status==='cancelled'?'cancelada':'pausada');
-    subEl.textContent='Repasse pra ela reativar quando puder.';
-  }else{
-    icon.textContent='🔔';banner.classList.add('warn');
-    title.textContent='Avisar Danny: pagamento mensal vence dia 12';
-    subEl.textContent='Repasse o aviso pra ela renovar antes do vencimento.';
-  }
-  banner.classList.add('active');
+  banner.classList.remove('danger','info');
+  banner.classList.add('warn','active');
 }
 function hideNotice(){document.getElementById('noticeBanner').classList.remove('active');}
 
