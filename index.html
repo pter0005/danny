@@ -237,6 +237,28 @@ tbody tr:hover .row-actions{opacity:1;}
 @keyframes toastIn{from{opacity:0;transform:translateY(12px) scale(0.95);}to{opacity:1;transform:none;}}
 @keyframes toastOut{to{opacity:0;transform:translateY(12px) scale(0.95);}}
 
+/* PIX MODAL */
+.pix-modal{width:520px;max-width:100%;text-align:center;}
+.pix-modal .modal-body{padding:8px 28px 28px;}
+.pix-amount{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:800;margin-bottom:6px;}
+.pix-tagline{font-size:13px;color:var(--g5);margin-bottom:20px;}
+.pix-qr-wrap{background:var(--white);border:2px solid var(--g2);border-radius:var(--r);padding:18px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+.pix-qr-wrap img{width:240px;height:240px;display:block;}
+.pix-qr-wrap.loading{min-height:240px;align-items:center;justify-content:center;color:var(--g4);font-size:13px;}
+.pix-copy{background:var(--g1);border:1.5px solid var(--g2);border-radius:var(--rs);padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--g6);word-break:break-all;text-align:left;line-height:1.5;max-height:80px;overflow-y:auto;margin-bottom:10px;}
+.pix-copy-btn{width:100%;padding:14px;background:var(--green);color:var(--black);border:none;border-radius:var(--rs);font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.pix-copy-btn:hover{background:#00b348;transform:translateY(-1px);}
+.pix-copy-btn.copied{background:var(--blue);color:white;}
+.pix-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0;}
+.pix-info-card{background:var(--g1);border-radius:var(--rs);padding:12px;text-align:center;}
+.pix-info-lbl{font-size:11px;color:var(--g4);text-transform:uppercase;letter-spacing:0.8px;font-weight:600;}
+.pix-info-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;margin-top:3px;}
+.pix-status{padding:14px;background:var(--orange-bg);border-radius:var(--rs);font-size:13px;color:#8a4a00;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;}
+.pix-status.success{background:var(--green-bg);color:#00873a;}
+.pix-status .dot{width:10px;height:10px;border-radius:50%;background:var(--orange);animation:pulse 1.5s infinite;}
+.pix-status.success .dot{background:var(--green);animation:none;}
+.pix-helptext{font-size:12px;color:var(--g4);margin-top:12px;line-height:1.5;}
+
 /* SUBSCRIPTION */
 .sub-explainer{background:var(--white);border:1px solid var(--g2);border-radius:var(--r);padding:28px 32px;margin-bottom:20px;}
 .sub-explainer h3{font-size:18px;font-weight:700;margin-bottom:12px;}
@@ -361,6 +383,15 @@ tbody tr:hover .row-actions{opacity:1;}
   </aside>
 
   <main class="main">
+    <!-- NOTICE BANNER (some quando ela pagar, automático) -->
+    <div class="notice-banner" id="noticeBanner">
+      <div class="notice-icon" id="noticeIcon">🔔</div>
+      <div class="notice-text">
+        <strong id="noticeTitle">Avisar Danny: pagamento mensal vence dia 12</strong>
+        <span id="noticeSub">Repasse o aviso pra ela renovar antes do vencimento.</span>
+      </div>
+    </div>
+
     <!-- INVENTORY -->
     <section class="view-section active" id="view-inventory">
       <div class="greeting"><h2 id="greetingText">Olá, <span>Danny</span> 👋</h2><p>Seu estoque atualizado em tempo real</p></div>
@@ -423,7 +454,7 @@ tbody tr:hover .row-actions{opacity:1;}
     <section class="view-section" id="view-subscription">
       <div class="sub-hero">
         <h2>Mensalidade do sistema</h2>
-        <p>Espacinho pra renovar a mensalidade do Estoque Danny quando for hora 💚</p>
+        <p>R$ 45,60 todo mês — cobrança dia 8, vencimento dia 12. Mantém o Estoque Danny rodando.</p>
       </div>
 
       <div class="sub-grid">
@@ -477,6 +508,31 @@ tbody tr:hover .row-actions{opacity:1;}
       </div>
     </div>
     <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveProduct()">Salvar</button></div>
+  </div>
+</div>
+
+<!-- PIX MODAL (checkout transparente) -->
+<div class="modal-overlay" id="pixModal">
+  <div class="modal pix-modal">
+    <div class="modal-header"><h2>⚡ Pagar com PIX</h2><button class="modal-close" onclick="closePixModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="pix-amount">R$ 45,60</div>
+      <div class="pix-tagline">Mensalidade Estoque Danny</div>
+
+      <div class="pix-qr-wrap loading" id="pixQrWrap">Gerando QR Code...</div>
+
+      <div class="pix-copy" id="pixCopyCode">—</div>
+      <button class="pix-copy-btn" id="pixCopyBtn" onclick="copyPixCode()">📋 Copiar código PIX</button>
+
+      <div class="pix-info">
+        <div class="pix-info-card"><div class="pix-info-lbl">Vence em</div><div class="pix-info-val" id="pixExpires">—</div></div>
+        <div class="pix-info-card"><div class="pix-info-lbl">Status</div><div class="pix-info-val" id="pixId">—</div></div>
+      </div>
+
+      <div class="pix-status" id="pixStatus"><span class="dot"></span><span>Aguardando pagamento...</span></div>
+
+      <div class="pix-helptext">Abre o app do seu banco → escolhe PIX → "Copia e cola" → cola o código acima ou escaneia o QR. Assim que cair, o sistema atualiza automático aqui.</div>
+    </div>
   </div>
 </div>
 
@@ -569,7 +625,7 @@ function startListeners(){
     var key=emailKey(u.email);
     unsubS=subsRef.doc(key).onSnapshot(function(snap){
       subscription=snap.exists?Object.assign({_id:snap.id},snap.data()):null;
-      renderSubscription();checkAccess();
+      renderSubscription();checkAccess();maybeMarkPixPaid();
     },function(e){console.error('sub listener',e);});
     unsubPH=paymentHistoryRef.where('email','==',key).orderBy('paidAt','desc').limit(12).onSnapshot(function(s){
       paymentHistory=s.docs.map(function(d){return Object.assign({id:d.id},d.data());});
@@ -578,9 +634,48 @@ function startListeners(){
   }
 }
 
-// Sem banner de aviso — sistema sempre acessível.
-// Status da mensalidade fica só na aba Assinatura, sem urgência/ameaça.
-function checkAccess(){/* no-op: app nunca bloqueia ou avisa o usuário */}
+// Banner de aviso aparece quando assinatura não está ativa,
+// e some automaticamente quando ela paga (webhook atualiza activeUntil).
+// Não tem botão de dispensar — só sai com pagamento.
+function checkAccess(){
+  var u=auth.currentUser;
+  if(!u)return;
+  // Admin: nunca mostra aviso
+  if(isAdminEmail(u.email)){hideNotice();return;}
+  // Assinatura ativa: esconde aviso
+  if(isSubActive(subscription)){hideNotice();return;}
+  // Senão, mostra aviso (sai sozinho quando ela pagar)
+  showNotice(subscription);
+}
+
+function showNotice(sub){
+  var banner=document.getElementById('noticeBanner');
+  var icon=document.getElementById('noticeIcon');
+  var title=document.getElementById('noticeTitle');
+  var subEl=document.getElementById('noticeSub');
+
+  banner.classList.remove('warn','danger','info');
+
+  if(!sub){
+    icon.textContent='🔔';banner.classList.add('info');
+    title.textContent='Avisar Danny: ainda não tem plano ativo';
+    subEl.textContent='Repasse pra ela ativar a mensalidade quando puder.';
+  }else if(sub.status==='overdue'){
+    icon.textContent='⚠️';banner.classList.add('danger');
+    title.textContent='Avisar Danny: pagamento não autorizado';
+    subEl.textContent='O último pagamento falhou — repasse pra ela tentar de novo.';
+  }else if(sub.status==='cancelled'||sub.status==='paused'){
+    icon.textContent='⏸️';banner.classList.add('warn');
+    title.textContent='Avisar Danny: assinatura '+(sub.status==='cancelled'?'cancelada':'pausada');
+    subEl.textContent='Repasse pra ela reativar quando puder.';
+  }else{
+    icon.textContent='🔔';banner.classList.add('warn');
+    title.textContent='Avisar Danny: pagamento mensal vence dia 12';
+    subEl.textContent='Repasse o aviso pra ela renovar antes do vencimento.';
+  }
+  banner.classList.add('active');
+}
+function hideNotice(){document.getElementById('noticeBanner').classList.remove('active');}
 
 function renderSubscription(){
   var nextDate=document.getElementById('subNextDate');
@@ -627,20 +722,85 @@ function payWithCard(){
   window.open(PREAPPROVAL_URL,'_blank','noopener');
 }
 
+var pixActivePaymentId=null;
+
+function openPixModal(){document.getElementById('pixModal').classList.add('active');}
+function closePixModal(){document.getElementById('pixModal').classList.remove('active');pixActivePaymentId=null;resetPixModal();}
+function resetPixModal(){
+  var wrap=document.getElementById('pixQrWrap');
+  wrap.classList.add('loading');wrap.innerHTML='Gerando QR Code...';
+  document.getElementById('pixCopyCode').textContent='—';
+  document.getElementById('pixExpires').textContent='—';
+  document.getElementById('pixId').textContent='—';
+  var st=document.getElementById('pixStatus');st.classList.remove('success');
+  st.innerHTML='<span class="dot"></span><span>Aguardando pagamento...</span>';
+  var btn=document.getElementById('pixCopyBtn');btn.classList.remove('copied');btn.textContent='📋 Copiar código PIX';
+}
+
 function payWithPix(){
   var u=auth.currentUser;if(!u)return toast('Faça login primeiro','⚠️');
-  toast('Gerando PIX...','⚡');
-  fetch('/api/mp-create-pix',{
+  resetPixModal();
+  openPixModal();
+  fetch('/api/mp-pix-qr',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({email:u.email})
   })
-    .then(function(r){return r.json();})
-    .then(function(j){
-      if(j.initPoint){window.open(j.initPoint,'_blank','noopener');}
-      else{toast('Erro ao gerar PIX','❌');console.error(j);}
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,data:j};});})
+    .then(function(res){
+      if(!res.ok||!res.data.qrCode){
+        var st=document.getElementById('pixStatus');
+        st.innerHTML='<span class="dot"></span><span>Erro: '+((res.data&&res.data.error)||'falha ao gerar PIX')+'</span>';
+        toast('Erro ao gerar PIX','❌');
+        console.error(res);
+        return;
+      }
+      var d=res.data;
+      pixActivePaymentId=d.paymentId;
+      var wrap=document.getElementById('pixQrWrap');
+      wrap.classList.remove('loading');
+      wrap.innerHTML='<img src="data:image/png;base64,'+d.qrCodeBase64+'" alt="QR Code PIX"/>';
+      document.getElementById('pixCopyCode').textContent=d.qrCode;
+      var exp=d.expiresAt?new Date(d.expiresAt):null;
+      document.getElementById('pixExpires').textContent=exp?(exp.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})):'—';
+      document.getElementById('pixId').textContent='#'+(d.paymentId||'').toString().slice(-6);
     })
-    .catch(function(e){console.error(e);toast('Erro de rede','❌');});
+    .catch(function(e){
+      console.error(e);
+      var st=document.getElementById('pixStatus');
+      st.innerHTML='<span class="dot"></span><span>Erro de rede — tente novamente</span>';
+    });
+}
+
+function copyPixCode(){
+  var code=document.getElementById('pixCopyCode').textContent;
+  if(!code||code==='—')return;
+  var btn=document.getElementById('pixCopyBtn');
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(code).then(function(){
+      btn.classList.add('copied');btn.textContent='✅ Copiado!';
+      setTimeout(function(){btn.classList.remove('copied');btn.textContent='📋 Copiar código PIX';},2200);
+    });
+  }else{
+    // Fallback
+    var ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');btn.classList.add('copied');btn.textContent='✅ Copiado!';
+      setTimeout(function(){btn.classList.remove('copied');btn.textContent='📋 Copiar código PIX';},2200);
+    }catch(e){toast('Erro ao copiar','❌');}
+    document.body.removeChild(ta);
+  }
+}
+
+// When subscription updates while PIX modal is open, detect payment success
+function maybeMarkPixPaid(){
+  if(!pixActivePaymentId)return;
+  if(!isSubActive(subscription))return;
+  // Subscription went active → assume payment landed
+  var st=document.getElementById('pixStatus');
+  st.classList.add('success');
+  st.innerHTML='<span class="dot"></span><span>✅ Pagamento confirmado! Liberado.</span>';
+  setTimeout(function(){closePixModal();toast('PIX confirmado!','✅');},1800);
+  pixActivePaymentId=null;
 }
 
 function getStatus(p){return p.qty===0?'out':p.qty<=p.min?'low':'ok';}
@@ -768,7 +928,8 @@ function toast(msg,icon){icon=icon||'';var c=document.getElementById('toasts'),e
 
 document.getElementById('modal').addEventListener('click',function(e){if(e.target===e.currentTarget)closeModal();});
 document.getElementById('movModal').addEventListener('click',function(e){if(e.target===e.currentTarget)closeMovModal();});
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal();closeMovModal();}});
+document.getElementById('pixModal').addEventListener('click',function(e){if(e.target===e.currentTarget)closePixModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal();closeMovModal();closePixModal();}});
 document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 document.getElementById('loginEmail').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('loginPass').focus();});
 </script>
