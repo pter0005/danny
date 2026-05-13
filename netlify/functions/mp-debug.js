@@ -29,6 +29,14 @@ exports.handler = async () => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       expected: status,
+      siteIdentity: {
+        SITE_NAME: process.env.SITE_NAME || null,
+        SITE_ID: process.env.SITE_ID || null,
+        URL: process.env.URL || null,
+        DEPLOY_URL: process.env.DEPLOY_URL || null,
+        CONTEXT: process.env.CONTEXT || null,
+        BRANCH: process.env.BRANCH || null
+      },
       userEnvVarsFoundInFunctions: userVars,
       userVarCount: userVars.length,
       netlifyBuiltinCount: netlifyBuiltin.length,
