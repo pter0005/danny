@@ -18,17 +18,21 @@ exports.handler = async () => {
     else status[k] = `✅ set (${v.length} chars, starts: "${v.slice(0, 16).replace(/\n/g, '\\n')}...")`;
   });
 
-  // Also list what env keys ARE present (mask values)
-  const otherKeys = Object.keys(process.env)
-    .filter((k) => !expected.includes(k) && (k.startsWith('FIREBASE') || k.startsWith('MP_') || k.startsWith('TELEGRAM')))
-    .reduce((o, k) => { o[k] = `(${(process.env[k] || '').length} chars)`; return o; }, {});
+  // Dump ALL env var keys Netlify exposes (no values, just key names)
+  const allKeys = Object.keys(process.env).sort();
+  // Categorize
+  const netlifyBuiltin = allKeys.filter(k => k.startsWith('NETLIFY') || k.startsWith('AWS_') || k.startsWith('LAMBDA_') || k === 'NODE_ENV' || k === 'PATH' || k === 'HOME' || k === 'PWD' || k === 'LANG' || k === 'TZ');
+  const userVars = allKeys.filter(k => !netlifyBuiltin.includes(k));
 
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       expected: status,
-      otherRelatedKeysFound: otherKeys,
+      userEnvVarsFoundInFunctions: userVars,
+      userVarCount: userVars.length,
+      netlifyBuiltinCount: netlifyBuiltin.length,
+      totalEnvVarsCount: allKeys.length,
       nodeVersion: process.version,
       time: new Date().toISOString()
     }, null, 2)
