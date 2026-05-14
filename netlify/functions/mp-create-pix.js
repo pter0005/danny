@@ -33,7 +33,7 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: corsHeaders(), body: JSON.stringify({ error: 'email required' }) };
   }
 
-  const origin = event.headers['origin'] || event.headers['referer'] || 'https://imaginative-meerkat-4ac40b.netlify.app';
+  const origin = event.headers['origin'] || event.headers['referer'] || 'https://estoquedanny.netlify.app';
   const baseUrl = origin.replace(/\/$/, '');
 
   const preference = {
