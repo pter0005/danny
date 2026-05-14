@@ -627,7 +627,9 @@ function startListeners(){
       subscription=snap.exists?Object.assign({_id:snap.id},snap.data()):null;
       renderSubscription();checkAccess();maybeMarkPixPaid();
     },function(e){console.error('sub listener',e);});
-    unsubPH=paymentHistoryRef.where('email','==',key).orderBy('paidAt','desc').limit(12).onSnapshot(function(s){
+    // Mostra TODOS os pagamentos (sistema de 1 cliente — sem filtro por email)
+    // Bonus: evita exigir composite index do Firestore
+    unsubPH=paymentHistoryRef.orderBy('paidAt','desc').limit(20).onSnapshot(function(s){
       paymentHistory=s.docs.map(function(d){return Object.assign({id:d.id},d.data());});
       renderSubscription();
     },function(e){console.error('history listener',e);});
