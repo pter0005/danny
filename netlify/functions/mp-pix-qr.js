@@ -63,7 +63,7 @@ exports.handler = async (event) => {
     external_reference: `pix:${email}`,
     payer: { email },
     date_of_expiration: isoWithTZ(due),
-    notification_url: `https://dannyestoque.netlify.app/api/mp-webhook`,
+    notification_url: `https://imaginative-meerkat-4ac40b.netlify.app/api/mp-webhook`,
     metadata: { kind: 'pix-30d', email }
   };
 
