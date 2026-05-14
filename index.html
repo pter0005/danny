@@ -815,13 +815,26 @@ function renderAlerts(){
 }
 
 // MOVEMENTS
+function fmtBRL(v){if(v==null||isNaN(v))return 'R$ 0,00';return 'R$ '+Number(v).toFixed(2).replace('.',',');}
+function movValue(m){
+  if(typeof m.totalValue==='number')return m.totalValue;
+  // Fallback p/ movs antigas sem valor salvo: usa preço atual do produto
+  if(typeof m.unitPrice==='number')return m.unitPrice*m.qty;
+  var p=products.find(function(x){return x.id===m.productId;});
+  return (p?(Number(p.price)||0):0)*m.qty;
+}
+
 function renderMov(){
-  var inTotal=0,outTotal=0;
-  movements.forEach(function(m){if(m.type==='in')inTotal+=m.qty;else outTotal+=m.qty;});
-  document.getElementById('movIn').textContent=inTotal;
-  document.getElementById('movOut').textContent=outTotal;
-  var bal=inTotal-outTotal;
-  document.getElementById('movBal').textContent=(bal>=0?'+':'')+bal;
+  var inTotal=0,outTotal=0,inValue=0,outValue=0;
+  movements.forEach(function(m){
+    var v=movValue(m);
+    if(m.type==='in'){inTotal+=m.qty;inValue+=v;}
+    else{outTotal+=m.qty;outValue+=v;}
+  });
+  document.getElementById('movIn').innerHTML=inTotal+' <span style="font-size:12px;color:var(--g5);font-weight:500;display:block;margin-top:4px;">'+fmtBRL(inValue)+'</span>';
+  document.getElementById('movOut').innerHTML=outTotal+' <span style="font-size:12px;color:var(--g5);font-weight:500;display:block;margin-top:4px;">'+fmtBRL(outValue)+'</span>';
+  var bal=inTotal-outTotal,valBal=inValue-outValue;
+  document.getElementById('movBal').innerHTML=(bal>=0?'+':'')+bal+' <span style="font-size:12px;color:var(--g5);font-weight:500;display:block;margin-top:4px;">'+(valBal>=0?'+':'-')+fmtBRL(Math.abs(valBal))+'</span>';
   document.getElementById('movBal').style.color=bal>=0?'var(--green)':'var(--red)';
 
   var el=document.getElementById('movList');
@@ -831,10 +844,14 @@ function renderMov(){
     var ago=min<1?'agora':min<60?min+'min':min<1440?Math.floor(min/60)+'h':Math.floor(min/1440)+'d';
     var isIn=m.type==='in';
     var note=m.note?' · '+m.note:'';
+    var v=movValue(m);
     return '<div class="mov-item">'+
       '<div class="mov-type '+(isIn?'in':'out')+'">'+(isIn?'↓':'↑')+'</div>'+
       '<div class="mov-detail"><div class="mov-detail-name">'+m.productName+'</div><div class="mov-detail-sub">Código: <strong>'+(m.productCode||'—')+'</strong>'+note+'</div></div>'+
-      '<div class="mov-qty '+(isIn?'in':'out')+'">'+(isIn?'+':'-')+m.qty+'</div>'+
+      '<div style="text-align:right;margin-right:14px;">'+
+        '<div class="mov-qty '+(isIn?'in':'out')+'">'+(isIn?'+':'-')+m.qty+'</div>'+
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:var(--g5);font-weight:500;margin-top:2px;">'+fmtBRL(v)+'</div>'+
+      '</div>'+
       '<div class="mov-time">'+ago+'</div></div>';
   }).join('');
 }
@@ -863,9 +880,11 @@ function saveMovement(){
   if(type==='out'&&p.qty<qty)return toast('Estoque insuficiente','⚠️');
 
   var newQty=type==='in'?p.qty+qty:p.qty-qty;
+  var unitPrice=Number(p.price)||0;
+  var totalValue=unitPrice*qty;
   var batch=db.batch();
   batch.update(productsRef.doc(pid),{qty:newQty});
-  batch.set(movRef.doc(),{type:type,productId:pid,productName:p.name,productCode:p.code||'',qty:qty,note:note,time:Date.now()});
+  batch.set(movRef.doc(),{type:type,productId:pid,productName:p.name,productCode:p.code||'',qty:qty,unitPrice:unitPrice,totalValue:totalValue,note:note,time:Date.now()});
   batch.set(activityRef.doc(),{type:type==='in'?'add':'delete',text:(type==='in'?'Entrada':'Saída')+' de <strong>'+qty+'</strong> un. — <strong>'+p.name+'</strong>',time:Date.now()});
   batch.commit().then(function(){toast(type==='in'?'Entrada registrada':'Saída registrada',type==='in'?'✅':'📤');closeMovModal();}).catch(function(e){toast('Erro','❌');console.error(e);});
 }
